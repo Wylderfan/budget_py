@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QTableWidget, QTableWidgetItem,
     QTabWidget, QLineEdit, QComboBox, QDateEdit,
     QMessageBox, QFormLayout
@@ -26,11 +26,28 @@ class MainWindow(QMainWindow):
         # Add tabs
         tabs.addTab(self.create_transaction_tab(), "Add Transaction")
         tabs.addTab(self.create_summary_tab(), "Summary")
+        tabs.addTab(self.create_view_transactions_tab(), "View Transactions")
         tabs.addTab(self.create_reports_tab(), "Reports")
+
+        # Add a quit button
+        quit_button = QPushButton("Quit")
+        quit_button.clicked.connect(QApplication.quit)
+        layout.addWidget(quit_button)
         
         # Initialize database tables if they don't exist
         self.initialize_database()
+
+    def closeEvent(self, a0):
+        # Close database connection
+        if self.db:
+            self.db.close()
         
+        # Call parent's closeEvent (handles Qt cleanup)
+        super().closeEvent(a0)
+        
+        # Make sure application exits
+        QApplication.quit()       
+
     def create_transaction_tab(self):
         widget = QWidget()
         layout = QFormLayout()
@@ -60,7 +77,7 @@ class MainWindow(QMainWindow):
         
         # Add submit button
         submit_btn = QPushButton("Add Transaction")
-        submit_btn.clicked.connect(self.add_transaction)
+        #submit_btn.clicked.connect(self.add_transaction)
         layout.addRow(submit_btn)
         
         widget.setLayout(layout)
@@ -83,6 +100,17 @@ class MainWindow(QMainWindow):
         
         widget.setLayout(layout)
         return widget
+
+    def create_view_transactions_tab(self):
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
+        # Transactions will be implemented here
+        layout.addWidget(QLabel("Transactions coming soon"))
+        
+        widget.setLayout(layout)
+        return widget
+        
         
     def create_reports_tab(self):
         widget = QWidget()
@@ -144,3 +172,4 @@ class MainWindow(QMainWindow):
             for j, value in enumerate(row):
                 item = QTableWidgetItem(str(value))
                 self.summary_table.setItem(i, j, item) 
+
