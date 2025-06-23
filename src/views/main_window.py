@@ -1,11 +1,13 @@
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QApplication, QDialog, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QTableWidget, QTableWidgetItem,
     QTabWidget, QLineEdit, QComboBox, QDateEdit,
     QMessageBox, QFormLayout
 )
 from PyQt6.QtCore import Qt, QDate
 from datetime import datetime
+
+from .add_del_accounts import AddDelAccountsWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, db):
@@ -16,6 +18,7 @@ class MainWindow(QMainWindow):
         
         # Create central widget and main layout
         central_widget = QWidget()
+        self.central_widget = central_widget
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
         
@@ -24,6 +27,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(tabs)
         
         # Add tabs
+        tabs.addTab(self.create_budget_tab(), "Budget")
         tabs.addTab(self.create_transaction_tab(), "Add Transaction")
         tabs.addTab(self.create_summary_tab(), "Summary")
         tabs.addTab(self.create_view_transactions_tab(), "View Transactions")
@@ -34,19 +38,32 @@ class MainWindow(QMainWindow):
         quit_button.clicked.connect(QApplication.quit)
         layout.addWidget(quit_button)
         
-        # Initialize database tables if they don't exist
-        self.initialize_database()
-
     def closeEvent(self, a0):
-        # Close database connection
         if self.db:
             self.db.close()
         
-        # Call parent's closeEvent (handles Qt cleanup)
         super().closeEvent(a0)
         
         # Make sure application exits
         QApplication.quit()       
+
+    def open_window(self, window):
+        if window.exec() == QDialog.DialogCode.Accepted:
+            # User Accepted
+            print("Accepted")
+        else:
+            # User Cancelled
+            print("Cancelled")
+
+    def create_budget_tab(self):
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
+        # Budget will be implemented here
+        layout.addWidget(QLabel("Budget coming soon..."))
+        
+        widget.setLayout(layout)
+        return widget
 
     def create_transaction_tab(self):
         widget = QWidget()
@@ -87,6 +104,17 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
+        modify_accounts = QPushButton("Modify Accounts")
+        modify_accounts.clicked.connect(lambda: self.open_window(AddDelAccountsWindow("Modify Accounts", 300, 400, None)))
+        layout.addWidget(modify_accounts)
+        
+        widget.setLayout(layout)
+        return widget
+ 
+    def create_view_transactions_tab(self):
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
         # Summary table
         self.summary_table = QTableWidget()
         self.summary_table.setColumnCount(4)
@@ -100,42 +128,17 @@ class MainWindow(QMainWindow):
         
         widget.setLayout(layout)
         return widget
-
-    def create_view_transactions_tab(self):
-        widget = QWidget()
-        layout = QVBoxLayout()
-        
-        # Transactions will be implemented here
-        layout.addWidget(QLabel("Transactions coming soon"))
-        
-        widget.setLayout(layout)
-        return widget
-        
         
     def create_reports_tab(self):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        # Reports will be implemented here
-        layout.addWidget(QLabel("Reports coming soon..."))
+        # Summary will be implemented here
+        layout.addWidget(QLabel("Summary coming soon"))
         
         widget.setLayout(layout)
         return widget
-        
-    def initialize_database(self):
-        # Create transactions table if it doesn't exist
-        query = """
-        CREATE TABLE IF NOT EXISTS transactions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            date DATE NOT NULL,
-            description VARCHAR(255) NOT NULL,
-            amount DECIMAL(10,2) NOT NULL,
-            category VARCHAR(50) NOT NULL,
-            type VARCHAR(10) NOT NULL
-        )
-        """
-        self.db.execute_query(query)
-        
+       
     def add_transaction(self):
         try:
             amount = float(self.amount_input.text())
