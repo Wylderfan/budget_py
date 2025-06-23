@@ -19,17 +19,22 @@ class DatabaseConnector:
             )
             self.cursor = self.connection.cursor()
             print("Successfully connected to the database.")
-        except mysql.connector.Error as e:
+        except (mysql.connector.Error, Exception) as e:
             print(f"Error connecting to MySQL: {e}")
+            self.connection = None
+            self.cursor = None
 
-    def execute_query(self, query, params=None):
+    def execute_query(self, query, params=None, specific_column=None):
             if self.connection and self.connection.is_connected(): # type: ignore
                 try:
                     self.cursor.execute(query, params) # type: ignore
                     # Check if the query is a SELECT statement
                     if query.strip().lower().startswith('select'):
                         results = self.cursor.fetchall() # type: ignore
-                        return [row[0] for row in results] # type: ignore
+                        if specific_column is None:
+                            return results
+                        else:
+                            return [row[specific_column] for row in results]
                     else:
                         # For INSERT, UPDATE, DELETE statements
                         self.connection.commit() # type: ignore
@@ -43,7 +48,7 @@ class DatabaseConnector:
                 return None
 
     def close(self):
-        if self.connection.is_connected(): # type: ignore
+        if self.connection and self.connection.is_connected(): # type: ignore
             self.cursor.close() # type: ignore
             self.connection.close() # type: ignore
             print("MySQL connection is closed.")
