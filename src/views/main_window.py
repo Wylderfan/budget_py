@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate
 from datetime import datetime
 
-from .add_del_accounts import AddDelAccountsWindow
+from .modify_accounts import AddDelAccountsWindow
 from .window_manager import WindowManager
 
 class MainWindow(QMainWindow):
