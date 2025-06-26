@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import (
     QLineEdit, QPushButton, QComboBox, QDateEdit, QLabel
 )
 from PyQt6.QtCore import QDate
-from .add_del_window import AddDelWindow
+from .popup_window import PopUpWindow
 
-class AddDelAccountsWindow(AddDelWindow):
+class AddDelAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, parent)
 
