@@ -8,11 +8,13 @@ from PyQt6.QtCore import Qt, QDate
 from datetime import datetime
 
 from .add_del_accounts import AddDelAccountsWindow
+from .window_manager import WindowManager
 
 class MainWindow(QMainWindow):
     def __init__(self, db):
         super().__init__()
         self.db = db
+        self.popup_window = WindowManager()
         self.setWindowTitle("Budget Tracker")
         self.setMinimumSize(800, 600)
         
@@ -46,14 +48,6 @@ class MainWindow(QMainWindow):
         
         # Make sure application exits
         QApplication.quit()       
-
-    def open_window(self, window):
-        if window.exec() == QDialog.DialogCode.Accepted:
-            # User Accepted
-            print("Accepted")
-        else:
-            # User Cancelled
-            print("Cancelled")
 
     def create_budget_tab(self):
         widget = QWidget()
@@ -105,7 +99,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         
         modify_accounts = QPushButton("Modify Accounts")
-        modify_accounts.clicked.connect(lambda: self.open_window(AddDelAccountsWindow("Modify Accounts", 300, 400, None)))
+        modify_accounts.clicked.connect(lambda: self.popup_window.open_window(AddDelAccountsWindow("Modify Accounts", 300, 400, self.db)))
         layout.addWidget(modify_accounts)
         
         widget.setLayout(layout)

@@ -16,7 +16,6 @@ def main():
         password=os.getenv('DB_PASSWORD'),
         database=os.getenv('DB_NAME')
     )
-    db.connect()
     
     # Create Qt application
     app = QApplication(sys.argv)
