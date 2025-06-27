@@ -4,12 +4,15 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QDate
 from .popup_window import PopUpWindow
+from .window_manager import WindowManager
+from .add_accounts_window import AddAccountsWindow
 
-class AddDelAccountsWindow(PopUpWindow):
+class ModifyAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, parent)
 
         self.db = db
+        self.popup_window = WindowManager()
 
         self.setup_ui()
 
@@ -17,19 +20,19 @@ class AddDelAccountsWindow(PopUpWindow):
         layout = QVBoxLayout()
 
         self.summary_table = QTableWidget()
-        self.summary_table.setColumnCount(4)
+        self.summary_table.setColumnCount(3)
         self.summary_table.setHorizontalHeaderLabels(["Name", "Amount", "Category"])
         layout.addWidget(self.summary_table)
 
         # Add account button
-        refresh_btn = QPushButton("Add")
-        refresh_btn.clicked.connect(self.refresh_accounts)
-        layout.addWidget(refresh_btn)
+        add_account_btn = QPushButton("Add")
+        add_account_btn.clicked.connect(lambda: self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db)))
+        layout.addWidget(add_account_btn)
 
         # Delete account button
-        refresh_btn = QPushButton("Delete")
-        refresh_btn.clicked.connect(self.refresh_accounts)
-        layout.addWidget(refresh_btn)
+        delete_account_btn = QPushButton("Delete")
+        delete_account_btn.clicked.connect(self.refresh_accounts)
+        layout.addWidget(delete_account_btn)
     
         # Refresh button
         refresh_btn = QPushButton("Refresh")
@@ -41,9 +44,3 @@ class AddDelAccountsWindow(PopUpWindow):
     def refresh_accounts(self, db):
         print("Refreshing Accounts")
 
-    def add_account(self, db):
-        print("Adding an account")
-
-    def delete_account(self, db):
-        print("Delete an account")
- 

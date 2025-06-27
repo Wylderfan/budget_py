@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate
 from datetime import datetime
 
-from .modify_accounts import AddDelAccountsWindow
+from .modify_accounts import ModifyAccountsWindow
 from .window_manager import WindowManager
 
 class MainWindow(QMainWindow):
@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         
         modify_accounts = QPushButton("Modify Accounts")
-        modify_accounts.clicked.connect(lambda: self.popup_window.open_window(AddDelAccountsWindow("Modify Accounts", 300, 400, self.db)))
+        modify_accounts.clicked.connect(lambda: self.popup_window.open_window(ModifyAccountsWindow("Modify Accounts", 300, 400, self.db)))
         layout.addWidget(modify_accounts)
         
         widget.setLayout(layout)
