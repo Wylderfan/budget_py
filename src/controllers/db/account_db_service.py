@@ -1,8 +1,8 @@
 from datetime import datetime
 import re
-from ...database_connector import DatabaseConnector
+from database_connector import DatabaseConnector
 
-class ModifyAccountDBService():
+class AccountDBService():
     def __init__(self, db_connector) -> None:
         self.db_connector: DatabaseConnector = db_connector
         
@@ -33,7 +33,13 @@ class ModifyAccountDBService():
     def del_account(self, id):
         self.db_connector.connect()
 
-        # Add logic here
+        query = """
+        DELETE FROM accounts WHERE id = %s
+        """
+
+        result = self.db_connector.execute_query(query, (id,))
+
+        print(f"The result from deletion is {result}")
 
         self.db_connector.close()
 
@@ -41,7 +47,23 @@ class ModifyAccountDBService():
         """Needs either id || name"""
         self.db_connector.connect()
 
-        # Add logic here
+        if id is not None:
+            query = """
+            SELECT * FROM accounts WHERE id = %s
+            """
+        elif name is not None:
+            query = """
+            SELECT * FROM accounts WHERE name = %s
+            """
+        else:
+            print("Must use arg id or name")
+            return
+        
+        if id is not None:
+            result = self.db_connector.execute_query(query, (id,))
+        else:
+            result = self.db_connector.execute_query(query, (name,))
 
         self.db_connector.close()
-
+        
+        return result
