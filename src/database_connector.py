@@ -51,4 +51,4 @@ class DatabaseConnector:
         if self.connection and self.connection.is_connected(): # type: ignore
             self.cursor.close() # type: ignore
             self.connection.close() # type: ignore
-            print("MySQL connection is closed.")
+

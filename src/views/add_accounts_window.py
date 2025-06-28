@@ -5,11 +5,13 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from views.popup_window import PopUpWindow
 
+from controllers.db.account_db_service import AccountDBService
+
 class AddAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, parent)
 
-        self.db = db
+        self.account_db_service = AccountDBService(db)
 
         self.setup_ui()
 
@@ -62,7 +64,7 @@ class AddAccountsWindow(PopUpWindow):
     
     def add_account(self):
         account_name = self.name_input.text()
-        balance_text = self.balance_input.text()
+        balance = round(float(self.balance_input.text()), 2)
         account_type = self.account_type_combo.currentText()
         
         # Basic validation
@@ -71,7 +73,7 @@ class AddAccountsWindow(PopUpWindow):
             return
         
         try:
-            starting_balance = float(balance_text) if balance_text else 0.0
+            starting_balance = float(balance) if balance else 0.0
         except ValueError:
             QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for starting balance.")
             return
@@ -80,5 +82,7 @@ class AddAccountsWindow(PopUpWindow):
         print(f"  Name: {account_name}")
         print(f"  Starting Balance: ${starting_balance:.2f}")
         print(f"  Account Type: {account_type}")
+
+        self.account_db_service.add_account(account_name, balance, account_type)
 
         self.accept()
