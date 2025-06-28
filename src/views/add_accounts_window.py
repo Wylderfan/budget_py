@@ -14,10 +14,8 @@ class AddAccountsWindow(PopUpWindow):
         self.setup_ui()
 
     def setup_ui(self):
-        # Main layout
         main_layout = QVBoxLayout()
         
-        # Title
         title_label = QLabel("Add New Account")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(title_label)
@@ -25,12 +23,10 @@ class AddAccountsWindow(PopUpWindow):
         # Form layout for inputs
         form_layout = QFormLayout()
         
-        # Account name input
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText("Enter account name")
         form_layout.addRow("Account Name:", self.name_input)
         
-        # Starting balance input
         self.balance_input = QLineEdit()
         self.balance_input.setPlaceholderText("0.00")
         form_layout.addRow("Starting Balance ($):", self.balance_input)
@@ -50,12 +46,10 @@ class AddAccountsWindow(PopUpWindow):
         # Buttons layout
         button_layout = QHBoxLayout()
         
-        # Cancel button
         cancel_btn = QPushButton("Cancel")
         cancel_btn.setAutoDefault(False)
         cancel_btn.clicked.connect(self.reject)
         
-        # Add account button
         add_account_btn = QPushButton("Add Account")
         add_account_btn.clicked.connect(self.add_account)
         
@@ -67,10 +61,8 @@ class AddAccountsWindow(PopUpWindow):
         self.setLayout(main_layout)
     
     def add_account(self):
-        """Handle adding the account"""
-        # Get the form data
-        account_name = self.name_input.text().strip()
-        balance_text = self.balance_input.text().strip()
+        account_name = self.name_input.text()
+        balance_text = self.balance_input.text()
         account_type = self.account_type_combo.currentText()
         
         # Basic validation
@@ -78,18 +70,15 @@ class AddAccountsWindow(PopUpWindow):
             QMessageBox.warning(self, "Invalid Input", "Please enter an account name.")
             return
         
-        # Validate balance
         try:
             starting_balance = float(balance_text) if balance_text else 0.0
         except ValueError:
             QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for starting balance.")
             return
         
-        # Print the collected data
         print(f"Adding Account:")
         print(f"  Name: {account_name}")
         print(f"  Starting Balance: ${starting_balance:.2f}")
         print(f"  Account Type: {account_type}")
-        
-        # Close the dialog
+
         self.accept()
