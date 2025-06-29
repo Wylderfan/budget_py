@@ -6,6 +6,7 @@ from PyQt6.QtCore import QDate
 from .popup_window import PopUpWindow
 from .window_manager import WindowManager
 from .add_accounts_window import AddAccountsWindow
+from .del_accounts_window import DelAccountsWindow
 
 class ModifyAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
@@ -31,7 +32,7 @@ class ModifyAccountsWindow(PopUpWindow):
 
         # Delete account button
         delete_account_btn = QPushButton("Delete")
-        delete_account_btn.clicked.connect(self.refresh_accounts)
+        delete_account_btn.clicked.connect(lambda: self.popup_window.open_window(DelAccountsWindow("Delete Accounts", 300, 400, self.db)))
         layout.addWidget(delete_account_btn)
     
         # Refresh button

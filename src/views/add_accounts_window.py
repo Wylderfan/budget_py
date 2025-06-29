@@ -9,9 +9,9 @@ from controllers.db.account_db_service import AccountDBService
 
 class AddAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
-        super().__init__(window_name, min_width, min_height, parent)
+        super().__init__(window_name, min_width, min_height, db, parent)
 
-        self.account_db_service = AccountDBService(db)
+        self.account_db_service = AccountDBService(self.get_db())
 
         self.setup_ui()
 

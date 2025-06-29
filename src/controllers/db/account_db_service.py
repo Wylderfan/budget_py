@@ -67,3 +67,25 @@ class AccountDBService():
         self.db_connector.close()
         
         return result
+
+    def search_all(self):
+        self.db_connector.connect()
+
+        query = """
+        SELECT * FROM accounts
+        """
+
+        result = self.db_connector.execute_query(query)
+
+        return result
+
+    def search_all_account_names(self):
+        self.db_connector.connect()
+
+        query = """
+        SELECT name FROM accounts
+        """
+
+        result = self.db_connector.execute_query(query, specific_column=0)
+
+        return result
