@@ -49,7 +49,7 @@ class AddAccountsWindow(PopUpWindow):
         button_layout = QHBoxLayout()
         
         cancel_btn = QPushButton("Cancel")
-        cancel_btn.setAutoDefault(False)
+        cancel_btn.setAutoDefault(False) # Needed for highlighting the submit button instead
         cancel_btn.clicked.connect(self.reject)
         
         add_account_btn = QPushButton("Add Account")
@@ -79,9 +79,9 @@ class AddAccountsWindow(PopUpWindow):
             return
         
         print(f"Adding Account:")
-        print(f"  Name: {account_name}")
-        print(f"  Starting Balance: ${starting_balance:.2f}")
-        print(f"  Account Type: {account_type}")
+        print(f"Name: {account_name}")
+        print(f"Starting Balance: ${starting_balance:.2f}")
+        print(f"Account Type: {account_type}")
 
         self.account_db_service.add_account(account_name, balance, account_type)
 

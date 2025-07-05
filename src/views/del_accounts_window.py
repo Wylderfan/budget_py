@@ -23,12 +23,16 @@ class DelAccountsWindow(PopUpWindow):
 
         self.select_account_combo = QComboBox()
         accounts = self.account_db_service.select_name_id_all_accounts() # name , id tuple
-        account_names = [row[0] for row in accounts] # type: ignore
-        self.select_account_combo.addItems(account_names) # type: ignore
+        self.account_names = [row[0] for row in accounts] # type: ignore
+        self.account_ids = [row[1] for row in accounts] # type: ignore
+        self.select_account_combo.addItems(self.account_names) # type: ignore
         form_layout.addRow("Select Account:", self.select_account_combo)
 
-        self.change_or_del_checkbox = QCheckBox()
-        form_layout.addRow("Transfer transactions to separate account:", self.change_or_del_checkbox)
+        self.transfer_checkbox = QCheckBox()
+        form_layout.addRow("Transfer transactions to separate account:", self.transfer_checkbox)
+
+        self.select_transfer_combo = QComboBox()
+        self.select_transfer_combo.addItems(self.account_names) # type: ignore
 
         main_layout.addLayout(form_layout)
 
@@ -47,6 +51,39 @@ class DelAccountsWindow(PopUpWindow):
         main_layout.addLayout(button_layout)
         
         self.setLayout(main_layout)
+
+    def id_from_combo(self, name):
+        id = self.account_db_service.search_account(name=name)
+        if len(id) == 1: # type: ignore
+            return id[0][0] # type: ignore
+        else:
+            print("Multiple entries of the same name")
+            return None
         
     def del_account(self):
-        return
+        selected_account = self.select_account_combo.currentText()
+        is_transfer = True if self.transfer_checkbox.checkState() == Qt.CheckState.Checked else False
+        transfer_account = None
+
+        if is_transfer:
+            transfer_account = self.select_transfer_combo.currentText()
+
+        # TODO add in a verification popup_window
+
+        print(f"Deleting Account:")
+        print(f"Name: {selected_account}")
+
+        if is_transfer:
+            print(f"Transferring transactions to: {transfer_account}")
+
+        if transfer_account is not None:
+            # TODO transfer transactions to transfer_account
+            print("Transferring account")
+
+        try:
+            self.account_db_service.del_account(self.id_from_combo(selected_account))
+        except Exception as e:
+            print(f"Error Deleting Account:\n{e}")
+
+        self.accept()
+
