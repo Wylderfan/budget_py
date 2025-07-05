@@ -7,8 +7,9 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate
 from datetime import datetime
 
-from .modify_accounts import ModifyAccountsWindow
 from .window_manager import WindowManager
+from .modify_accounts import ModifyAccountsWindow
+from .modify_categories import ModifyCategoriesWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, db):
@@ -55,7 +56,11 @@ class MainWindow(QMainWindow):
         
         # Budget will be implemented here
         layout.addWidget(QLabel("Budget coming soon..."))
-        
+
+        modify_categories = QPushButton("Modify Categories")
+        modify_categories.clicked.connect(lambda: self.popup_window.open_window(ModifyCategoriesWindow("Modify Categories", 300, 400, self.db)))
+        layout.addWidget(modify_categories)       
+
         widget.setLayout(layout)
         return widget
 
