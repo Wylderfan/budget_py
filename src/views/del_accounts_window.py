@@ -33,6 +33,7 @@ class DelAccountsWindow(PopUpWindow):
 
         self.select_transfer_combo = QComboBox()
         self.select_transfer_combo.addItems(self.account_names) # type: ignore
+        form_layout.addRow("Select account to transfer too:", self.select_transfer_combo)
 
         main_layout.addLayout(form_layout)
 
