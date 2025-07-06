@@ -85,5 +85,5 @@ class DelCategoriesWindow(PopUpWindow):
         except Exception as e:
             print(f"Error deleting category:\n{e}")
 
-            self.accept()
+        self.accept()
 

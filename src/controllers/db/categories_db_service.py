@@ -13,7 +13,7 @@ class CategoriesDBService():
 
         insert_query = """
         INSERT INTO categories (date_created, name, type)
-        VALUES (%s, %s, %s,)
+        VALUES (%s, %s, %s)
         """
 
         result = self.db_connector.execute_query(
