@@ -43,7 +43,7 @@ class AddCategoriesWindow(PopUpWindow):
         cancel_btn.setAutoDefault(False) # Needed for highlighting the submit button instead
         cancel_btn.clicked.connect(self.reject)
         
-        add_category_btn = QPushButton("Add Account")
+        add_category_btn = QPushButton("Add Category")
         add_category_btn.clicked.connect(self.add_category)
         
         button_layout.addWidget(cancel_btn)
