@@ -2,7 +2,7 @@ from datetime import datetime
 
 from database_connector import DatabaseConnector
 
-class CategoryDBService():
+class CategoriesDBService():
     def __init__(self, db_connector) -> None:
         self.db_connector: DatabaseConnector = db_connector
 
@@ -43,7 +43,7 @@ class CategoryDBService():
 
         self.db_connector.close()
 
-    def search_category(self, id=None, name=None):
+    def search_categories(self, id=None, name=None):
         """Needs either id || name"""
         self.db_connector.connect()
 
@@ -81,7 +81,7 @@ class CategoryDBService():
 
         return result
 
-    def select_name_id_all_categories(self):
+    def select_category_names(self):
         self.db_connector.connect()
 
         query = """

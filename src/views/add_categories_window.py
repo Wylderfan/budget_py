@@ -2,13 +2,13 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QVBoxLayout
 from views.popup_window import PopUpWindow
 
-from controllers.db.category_db_service import CategoryDBService
+from controllers.db.categories_db_service import CategoriesDBService
 
 class AddCategoriesWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, db, parent)
 
-        self.category_db_service = CategoryDBService(self.get_db())
+        self.category_db_service = CategoriesDBService(self.get_db())
 
         self.setup_ui()
 
