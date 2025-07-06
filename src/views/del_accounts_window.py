@@ -43,17 +43,17 @@ class DelAccountsWindow(PopUpWindow):
         cancel_btn.setAutoDefault(False)
         cancel_btn.clicked.connect(self.reject)
         
-        add_account_btn = QPushButton("Delete Account")
-        add_account_btn.clicked.connect(self.del_account)
+        del_account_btn = QPushButton("Delete Account")
+        del_account_btn.clicked.connect(self.del_account)
         
         button_layout.addWidget(cancel_btn)
-        button_layout.addWidget(add_account_btn)
+        button_layout.addWidget(del_account_btn)
         
         main_layout.addLayout(button_layout)
         
         self.setLayout(main_layout)
 
-    def id_from_combo(self, name):
+    def id_from_name(self, name):
         id = self.account_db_service.search_account(name=name)
         if len(id) == 1: # type: ignore
             return id[0][0] # type: ignore
@@ -64,10 +64,7 @@ class DelAccountsWindow(PopUpWindow):
     def del_account(self):
         selected_account = self.select_account_combo.currentText()
         is_transfer = True if self.transfer_checkbox.checkState() == Qt.CheckState.Checked else False
-        transfer_account = None
-
-        if is_transfer:
-            transfer_account = self.select_transfer_combo.currentText()
+        transfer_account = self.select_transfer_combo.currentText() if is_transfer else None
 
         # TODO add in a verification popup_window
 
@@ -79,10 +76,10 @@ class DelAccountsWindow(PopUpWindow):
 
         if transfer_account is not None:
             # TODO transfer transactions to transfer_account
-            print("Transferring account")
+            print("Transferring transactions")
 
         try:
-            self.account_db_service.del_account(self.id_from_combo(selected_account))
+            self.account_db_service.del_account(self.id_from_name(selected_account))
         except Exception as e:
             print(f"Error Deleting Account:\n{e}")
 
