@@ -1,10 +1,14 @@
 from PyQt6.QtWidgets import (
     QDialog, QWidget, QTableWidget, QVBoxLayout, QHBoxLayout, QFormLayout, 
-    QLineEdit, QPushButton, QComboBox, QDateEdit, QLabel
+    QLineEdit, QPushButton, QComboBox, QDateEdit, QTableWidgetItem
 )
-from PyQt6.QtCore import QDate
+from PyQt6.QtCore import QDate, Qt
+
 from .popup_window import PopUpWindow
 from .window_manager import WindowManager
+
+from controllers.db.account_db_service import AccountDBService
+
 from .add_accounts_window import AddAccountsWindow
 from .del_accounts_window import DelAccountsWindow
 
@@ -13,9 +17,13 @@ class ModifyAccountsWindow(PopUpWindow):
         super().__init__(window_name, min_width, min_height, parent)
 
         self.db = db
+        self.account_db_service = AccountDBService(self.db)
+
         self.popup_window = WindowManager()
 
         self.setup_ui()
+
+        self.refresh_accounts()
 
     def setup_ui(self):
         layout = QVBoxLayout()
@@ -42,6 +50,25 @@ class ModifyAccountsWindow(PopUpWindow):
        
         self.setLayout(layout)
 
-    def refresh_accounts(self, db):
-        print("Refreshing Accounts")
+    def refresh_accounts(self):
+        try:
+            accounts = self.account_db_service.search_all()
+        except Exception as e:
+            print("Error while refreshing accounts:")
+            print(e)
+            return
+        
+        self.summary_table.setRowCount(len(accounts)) # type: ignore
+
+        for i, account in enumerate(accounts): # type: ignore
+            name = QTableWidgetItem(str(account[1]))
+            amount = QTableWidgetItem(f"${account[3]:.2f}")
+            account_type = QTableWidgetItem(str(account[4]))
+
+            self.summary_table.setItem(i, 0, name)
+            self.summary_table.setItem(i, 1, amount)
+            self.summary_table.setItem(i, 2, account_type)
+
+        self.summary_table.resizeColumnsToContents()
+
 
