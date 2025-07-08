@@ -38,23 +38,23 @@ python src/main.py
 ## Database Structure
 - budget_table
   - transactions
-    - id
-    - date
-    - description
-    - amount
-    - category
-    - type
-    - notes
-    - account
+    - id INT (PK, NN, AI)
+    - date DATE (NN)
+    - description VARCHAR(255) (NN)
+    - amount Decimal(10.2) (NN)
+    - category INT (NN)
+    - type VARCHAR(10) (NN)
+    - notes VARCHAR(1000)
+    - account INT (NN)
   - accounts
-    - id
-    - name
-    - date_created
-    - balance
-    - type
-    - is_credit (bool)
+    - id INT (PK, NN, AI)
+    - name VARCHAR(45) (NN)
+    - date_created DATE
+    - balance DECIMAL(10.2) (NN)
+    - type VARCHAR(45) (NN)
+    - is_credit TINYINT (NN)
   - categories
-    - id
-    - name
-    - date_created
-    - type
+    - id INT (PK, NN, AI)
+    - name VARCHAR(45) (NN)
+    - date_created DATE
+    - type VARCHAR(45) (NN)
