@@ -42,6 +42,7 @@ class CategoriesDBService():
             print(f"Error deleting category")
 
         self.db_connector.close()
+        return result
 
     def search_categories(self, id=None, name=None):
         """Needs either id || name"""

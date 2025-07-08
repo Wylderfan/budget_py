@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from PyQt6.QtWidgets import QApplication
 from views.main_window import MainWindow
 from database_connector import DatabaseConnector
+from database_initializer import DatabaseInitializer
 
 def main():
     # Load environment variables
@@ -16,6 +17,12 @@ def main():
         password=os.getenv('DB_PASSWORD'),
         database=os.getenv('DB_NAME')
     )
+    
+    # Initialize and validate database schema before UI starts
+    db_initializer = DatabaseInitializer(db)
+    if not db_initializer.initialize_database():
+        print("Failed to initialize database. Exiting...")
+        sys.exit(1)
     
     # Create Qt application
     app = QApplication(sys.argv)

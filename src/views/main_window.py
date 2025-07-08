@@ -3,15 +3,17 @@ from PyQt6.QtWidgets import (
     QPushButton, QLabel, QTableWidget, QTableWidgetItem,
     QTabWidget, QMessageBox
 )
-from PyQt6.QtCore import Qt
+
+from views.add_accounts_window import AddAccountsWindow
+from views.del_accounts_window import DelAccountsWindow
 
 from .window_manager import WindowManager
-from .modify_accounts import ModifyAccountsWindow
 from .modify_categories import ModifyCategoriesWindow
 from .del_transactions_window import DelTransactionsWindow
 from .add_transactions_window import AddTransactionsWindow
 
 from controllers.db.transaction_db_service import TransactionDBService
+from controllers.db.account_db_service import AccountDBService
 
 class MainWindow(QMainWindow):
     def __init__(self, db):
@@ -21,6 +23,7 @@ class MainWindow(QMainWindow):
         
         # Initialize database services
         self.transaction_db_service = TransactionDBService(self.db)
+        self.account_db_service = AccountDBService(self.db)
         
         self.setWindowTitle("Budget Tracker")
         self.setMinimumSize(800, 600)
@@ -48,6 +51,7 @@ class MainWindow(QMainWindow):
         
         # Load initial data
         self.refresh_summary()
+        self.refresh_accounts()
         
     def closeEvent(self, a0):
         if self.db:
@@ -78,9 +82,30 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        modify_accounts = QPushButton("Modify Accounts")
-        modify_accounts.clicked.connect(lambda: self.popup_window.open_window(ModifyAccountsWindow("Modify Accounts", 300, 400, self.db)))
-        layout.addWidget(modify_accounts)
+        # Summary table
+        self.account_summary_table = QTableWidget()
+        self.account_summary_table.setColumnCount(3)
+        self.account_summary_table.setHorizontalHeaderLabels(["Name", "Amount", "Type"])
+        layout.addWidget(self.account_summary_table)
+
+        button_layout = QHBoxLayout()
+
+        # Refresh button
+        refresh_btn = QPushButton("Refresh")
+        refresh_btn.clicked.connect(self.refresh_accounts)
+        button_layout.addWidget(refresh_btn)
+ 
+        # Add account button
+        add_account_btn = QPushButton("Add")
+        add_account_btn.clicked.connect(lambda: self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db)))
+        layout.addWidget(add_account_btn)
+
+        # Delete account button
+        delete_account_btn = QPushButton("Delete")
+        delete_account_btn.clicked.connect(lambda: self.popup_window.open_window(DelAccountsWindow("Delete Accounts", 300, 400, self.db)))
+        layout.addWidget(delete_account_btn)
+
+        layout.addLayout(button_layout)
         
         widget.setLayout(layout)
         return widget
@@ -90,10 +115,10 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         
         # Summary table
-        self.summary_table = QTableWidget()
-        self.summary_table.setColumnCount(6)
-        self.summary_table.setHorizontalHeaderLabels(["Date", "Description", "Amount", "Category", "Account", "Type"])
-        layout.addWidget(self.summary_table)
+        self.transaction_summary_table = QTableWidget()
+        self.transaction_summary_table.setColumnCount(6)
+        self.transaction_summary_table.setHorizontalHeaderLabels(["Date", "Description", "Amount", "Category", "Account", "Type"])
+        layout.addWidget(self.transaction_summary_table)
         
         # Button layout for add, refresh and delete
         button_layout = QHBoxLayout()
@@ -135,7 +160,7 @@ class MainWindow(QMainWindow):
             results = self.transaction_db_service.search_all()
             
             if results and isinstance(results, list):
-                self.summary_table.setRowCount(len(results))
+                self.transaction_summary_table.setRowCount(len(results))
                 for i, row in enumerate(results):
                     for j, value in enumerate(row):
                         # Format amount with currency symbol
@@ -146,12 +171,33 @@ class MainWindow(QMainWindow):
                                 item = QTableWidgetItem(str(value))
                         else:
                             item = QTableWidgetItem(str(value))
-                        self.summary_table.setItem(i, j, item)
+                        self.transaction_summary_table.setItem(i, j, item)
                         
-                self.summary_table.resizeColumnsToContents()
+                self.transaction_summary_table.resizeColumnsToContents()
             else:
-                self.summary_table.setRowCount(0)
+                self.transaction_summary_table.setRowCount(0)
         except Exception as e:
             print(f"Error refreshing transactions: {e}")
             QMessageBox.warning(self, "Error", "Could not refresh transactions.") 
+
+    def refresh_accounts(self):
+        try:
+            accounts = self.account_db_service.search_all()
+        except Exception as e:
+            print("Error while refreshing accounts:")
+            print(e)
+            return
+        
+        self.account_summary_table.setRowCount(len(accounts)) # type: ignore
+
+        for i, account in enumerate(accounts): # type: ignore
+            name = QTableWidgetItem(str(account[1]))
+            amount = QTableWidgetItem(f"${account[3]:.2f}")
+            account_type = QTableWidgetItem(str(account[4]))
+
+            self.account_summary_table.setItem(i, 0, name)
+            self.account_summary_table.setItem(i, 1, amount)
+            self.account_summary_table.setItem(i, 2, account_type)
+
+        self.account_summary_table.resizeColumnsToContents()
 

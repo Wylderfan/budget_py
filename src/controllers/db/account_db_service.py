@@ -42,6 +42,7 @@ class AccountDBService():
         print(f"The result from deletion is {result}")
 
         self.db_connector.close()
+        return result
 
     def search_account(self, id=None, name=None):
         """Needs either id || name"""
