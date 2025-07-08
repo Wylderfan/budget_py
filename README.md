@@ -41,10 +41,11 @@ python src/main.py
     - id
     - date
     - description
-    - notes
     - amount
     - category
     - type
+    - notes
+    - account
   - accounts
     - id
     - name
@@ -54,6 +55,6 @@ python src/main.py
     - is_credit (bool)
   - categories
     - id
-    - date_created
     - name
+    - date_created
     - type
