@@ -36,24 +36,24 @@ python src/main.py
 - `database_connector.py` - Database connection handler 
 
 ## Database Structure
-budget_table
-	transactions
-		id
-		date
-		description
-		notes
-		amount
-		category
-		type
-	accounts
-		id
-		name
-		date_created
-		balance
-		type
-		is_credit (bool)
-	categories
-		id
-		date_created
-		name
-		type
+- budget_table
+  - transactions
+    - id
+    - date
+    - description
+    - notes
+    - amount
+    - category
+    - type
+  - accounts
+    - id
+    - name
+    - date_created
+    - balance
+    - type
+    - is_credit (bool)
+  - categories
+    - id
+    - date_created
+    - name
+    - type
