@@ -1,0 +1,249 @@
+{
+  "categories": {
+    "Food": {
+      "type": "Expense",
+      "descriptions": [
+        "Grocery shopping at Safeway",
+        "Coffee at Starbucks", 
+        "Lunch at McDonald's",
+        "Dinner at Olive Garden",
+        "Pizza delivery from Dominos",
+        "Sushi at Yamato",
+        "Bagel and coffee",
+        "Ice cream at Dairy Queen",
+        "Breakfast at IHOP",
+        "Snacks from 7-Eleven",
+        "Takeout from Chipotle",
+        "Sandwich from Subway",
+        "Food court lunch",
+        "Costco bulk groceries",
+        "Farmers market produce",
+        "Thai food delivery",
+        "Bubble tea",
+        "Donuts from Tim Hortons",
+        "BBQ restaurant",
+        "Fine dining anniversary"
+      ],
+      "amount_range": [5.00, 150.00],
+      "common_amounts": [12.50, 25.00, 45.00, 8.75, 67.50, 15.25, 89.00, 32.50]
+    },
+    "Transportation": {
+      "type": "Expense", 
+      "descriptions": [
+        "Gas station fill-up",
+        "Uber ride downtown",
+        "Bus monthly pass",
+        "Parking meter",
+        "Oil change service",
+        "Car wash",
+        "Taxi to airport",
+        "Train ticket",
+        "Lyft to restaurant", 
+        "Parking garage fee",
+        "Metro card reload",
+        "Car maintenance",
+        "Tire rotation",
+        "Vehicle registration",
+        "Bridge toll",
+        "Car rental for weekend",
+        "Bike repair shop",
+        "Airport parking",
+        "Ferry ticket",
+        "Rideshare to work"
+      ],
+      "amount_range": [3.00, 200.00],
+      "common_amounts": [45.00, 12.50, 85.00, 5.25, 125.00, 35.75, 67.50, 15.00]
+    },
+    "Entertainment": {
+      "type": "Expense",
+      "descriptions": [
+        "Movie tickets",
+        "Netflix subscription",
+        "Concert tickets", 
+        "Mini golf outing",
+        "Bowling night",
+        "Video game purchase",
+        "Spotify premium",
+        "Book from Amazon",
+        "Museum admission",
+        "Amusement park tickets",
+        "Board game purchase",
+        "Theater show tickets",
+        "Comedy club cover",
+        "Art supplies",
+        "Photography equipment",
+        "Streaming service",
+        "Gaming console",
+        "Sports event tickets",
+        "Festival admission",
+        "Escape room activity"
+      ],
+      "amount_range": [5.00, 300.00],
+      "common_amounts": [15.99, 25.00, 75.00, 12.99, 150.00, 45.50, 89.99, 35.00]
+    },
+    "Bills": {
+      "type": "Expense",
+      "descriptions": [
+        "Electric bill payment",
+        "Water utility bill",
+        "Internet service",
+        "Cell phone bill",
+        "Car insurance premium",
+        "Health insurance",
+        "Home insurance",
+        "Natural gas bill",
+        "Rent payment",
+        "Mortgage payment",
+        "Property taxes",
+        "HOA fees",
+        "Garbage collection",
+        "Cable TV service",
+        "Gym membership",
+        "Subscription renewal",
+        "Credit card payment",
+        "Student loan payment",
+        "Life insurance premium",
+        "Security system monitoring"
+      ],
+      "amount_range": [25.00, 2500.00],
+      "common_amounts": [125.50, 89.99, 1250.00, 75.25, 450.00, 234.67, 1850.00, 67.50]
+    },
+    "Shopping": {
+      "type": "Expense",
+      "descriptions": [
+        "Amazon online order",
+        "Clothing at Target",
+        "Electronics at Best Buy",
+        "Home goods at IKEA",
+        "Pharmacy prescription",
+        "Hardware store supplies",
+        "Shoes at outlet mall",
+        "Jewelry purchase",
+        "Cosmetics at Sephora",
+        "Books at bookstore",
+        "Sporting goods",
+        "Furniture delivery",
+        "Garden center plants",
+        "Pet supplies",
+        "Office supplies",
+        "Kitchen appliances", 
+        "Bedding and linens",
+        "Tools and equipment",
+        "Holiday decorations",
+        "Gift for friend"
+      ],
+      "amount_range": [10.00, 500.00],
+      "common_amounts": [35.99, 67.50, 125.00, 23.45, 189.99, 45.75, 299.00, 78.25]
+    },
+    "Health": {
+      "type": "Expense",
+      "descriptions": [
+        "Doctor office visit",
+        "Dental cleaning",
+        "Prescription medication",
+        "Eye exam",
+        "Physical therapy session",
+        "Vitamins and supplements",
+        "Urgent care visit",
+        "Lab work tests",
+        "Specialist consultation",
+        "Massage therapy",
+        "Chiropractic treatment",
+        "Mental health session",
+        "Flu shot",
+        "Contact lenses",
+        "Medical equipment",
+        "Health screening",
+        "Allergy treatment",
+        "First aid supplies",
+        "Hospital copay",
+        "Medical imaging"
+      ],
+      "amount_range": [15.00, 800.00],
+      "common_amounts": [25.00, 150.00, 45.75, 89.50, 275.00, 125.25, 350.00, 67.50]
+    },
+    "Income": {
+      "type": "Income",
+      "descriptions": [
+        "Salary direct deposit",
+        "Freelance project payment", 
+        "Investment dividend",
+        "Tax refund",
+        "Bonus payment",
+        "Side gig earnings",
+        "Rental income",
+        "Gift money",
+        "Cashback reward",
+        "Selling old items",
+        "Consulting fees",
+        "Interest payment",
+        "Insurance claim",
+        "Scholarship money",
+        "Prize winnings",
+        "Returned item refund",
+        "Commission payment",
+        "Royalty income",
+        "Part-time job",
+        "Birthday money"
+      ],
+      "amount_range": [20.00, 5000.00],
+      "common_amounts": [2500.00, 150.00, 75.50, 1250.00, 500.00, 89.25, 3200.00, 450.00]
+    }
+  },
+  "accounts": [
+    {
+      "name": "Main Checking",
+      "type": "Chequing",
+      "balance": 2500.00
+    },
+    {
+      "name": "Savings Account", 
+      "type": "Savings",
+      "balance": 15000.00
+    },
+    {
+      "name": "Credit Card",
+      "type": "Credit Card", 
+      "balance": 850.00
+    },
+    {
+      "name": "Emergency Fund",
+      "type": "Savings",
+      "balance": 8000.00
+    },
+    {
+      "name": "Travel Card",
+      "type": "Credit Card",
+      "balance": 1200.00
+    }
+  ],
+  "transaction_patterns": {
+    "daily_expenses": ["Food", "Transportation"],
+    "weekly_expenses": ["Entertainment", "Shopping"],
+    "monthly_expenses": ["Bills", "Health"],
+    "income_frequency": {
+      "Salary direct deposit": "bi-weekly",
+      "Freelance project payment": "irregular", 
+      "Investment dividend": "quarterly",
+      "Bonus payment": "annual"
+    }
+  },
+  "notes_templates": [
+    "Work lunch with colleagues",
+    "Family dinner celebration", 
+    "Emergency repair needed",
+    "Monthly recurring payment",
+    "Special occasion purchase",
+    "Planned expense",
+    "Unexpected cost",
+    "Regular maintenance",
+    "Holiday related",
+    "Business expense",
+    "Personal treat",
+    "Health and wellness",
+    "Home improvement",
+    "Vehicle related",
+    "Gift for someone special",
+    ""
+  ]
+} 
