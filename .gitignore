@@ -5,3 +5,4 @@ src/lib/
 src/bin/
 .venv/
 .env
+.cursorrules
