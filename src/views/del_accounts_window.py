@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QCheckBox, QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QCheckBox, QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QMessageBox
 from PyQt6.QtCore import Qt
 
 from controllers.db.account_db_service import AccountDBService
@@ -66,22 +66,55 @@ class DelAccountsWindow(PopUpWindow):
         is_transfer = True if self.transfer_checkbox.checkState() == Qt.CheckState.Checked else False
         transfer_account = self.select_transfer_combo.currentText() if is_transfer else None
 
-        # TODO add in a verification popup_window
+        if not selected_account:
+            QMessageBox.warning(self, "Error", "No account selected.")
+            return
+
+        # Create confirmation message
+        confirmation_msg = f"Are you sure you want to delete this account?\n\nAccount: {selected_account}"
+        if is_transfer and transfer_account and transfer_account != selected_account:
+            confirmation_msg += f"\n\nAll transactions will be transferred to: {transfer_account}"
+        elif is_transfer:
+            QMessageBox.warning(self, "Error", "Cannot transfer to the same account being deleted.")
+            return
+        else:
+            confirmation_msg += "\n\nWarning: All transactions in this account will be permanently deleted!"
+
+        # Verification dialog
+        reply = QMessageBox.question(
+            self,
+            "Confirm Account Deletion",
+            confirmation_msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if reply != QMessageBox.StandardButton.Yes:
+            return
 
         print(f"Deleting Account:")
         print(f"Name: {selected_account}")
 
-        if is_transfer:
+        if is_transfer and transfer_account and transfer_account != selected_account:
             print(f"Transferring transactions to: {transfer_account}")
-
-        if transfer_account is not None:
-            # TODO transfer transactions to transfer_account
-            print("Transferring transactions")
+            # TODO: Implement transaction transfer logic here
+            # transfer_account_id = self.id_from_name(transfer_account)
+            # self.account_db_service.transfer_transactions(account_id, transfer_account_id)
 
         try:
-            self.account_db_service.del_account(self.id_from_name(selected_account))
+            account_id = self.id_from_name(selected_account)
+            if account_id is None:
+                QMessageBox.warning(self, "Error", "Could not find account to delete.")
+                return
+                
+            result = self.account_db_service.del_account(account_id)
+            if result == 1:
+                QMessageBox.information(self, "Success", "Account deleted successfully!")
+            else:
+                QMessageBox.warning(self, "Error", "Failed to delete account.")
         except Exception as e:
             print(f"Error Deleting Account:\n{e}")
+            QMessageBox.warning(self, "Error", f"An error occurred while deleting: {str(e)}")
 
         self.accept()
 
