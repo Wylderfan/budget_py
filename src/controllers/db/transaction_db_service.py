@@ -136,4 +136,32 @@ class TransactionDBService():
 
         self.db_connector.close()
 
+        return result
+
+    def search_for_deletion(self, start_date=None, end_date=None):
+        """Search transactions with ID for deletion purposes"""
+        self.db_connector.connect()
+
+        if start_date and end_date:
+            query = """
+            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type
+            FROM transactions t
+            LEFT JOIN categories c ON t.category = c.id
+            LEFT JOIN accounts a ON t.account = a.id
+            WHERE t.date BETWEEN %s AND %s
+            ORDER BY t.date DESC
+            """
+            result = self.db_connector.execute_query(query, (start_date, end_date))
+        else:
+            query = """
+            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type
+            FROM transactions t
+            LEFT JOIN categories c ON t.category = c.id
+            LEFT JOIN accounts a ON t.account = a.id
+            ORDER BY t.date DESC
+            """
+            result = self.db_connector.execute_query(query)
+
+        self.db_connector.close()
+
         return result 
