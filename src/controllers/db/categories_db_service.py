@@ -27,6 +27,8 @@ class CategoriesDBService():
 
         self.db_connector.close()
 
+        return result
+
     def del_category(self, id):
         self.db_connector.connect()
 

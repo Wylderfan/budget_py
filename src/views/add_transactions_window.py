@@ -112,37 +112,61 @@ class AddTransactionsWindow(PopUpWindow):
             QMessageBox.warning(self, "Error", "Could not load accounts from database.")
     
     def add_transaction(self):
+        amount_text = self.amount_input.text().strip()
+        description = self.description_input.text().strip()
+        category_id = self.category_combo.currentData()
+        account_id = self.account_combo.currentData()
+        date = self.date_input.date().toPyDate()
+        transaction_type = self.type_combo.currentText()
+        notes = self.notes_input.text().strip()
+        
+        # Validate amount
+        if not amount_text:
+            QMessageBox.warning(self, "Invalid Input", "Please enter an amount.")
+            return
+            
         try:
-            amount = float(self.amount_input.text())
-            description = self.description_input.text()
-            category_id = self.category_combo.currentData()
-            account_id = self.account_combo.currentData()
-            date = self.date_input.date().toPyDate()
-            transaction_type = self.type_combo.currentText()
-            notes = self.notes_input.text()
+            amount = round(float(amount_text), 2)
+            if amount <= 0:
+                QMessageBox.warning(self, "Invalid Input", "Amount must be greater than 0.")
+                return
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for amount.")
+            return
+        
+        # Validate description
+        if not description:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a description.")
+            return
             
-            # Basic validation
-            if not description or amount <= 0:
-                QMessageBox.warning(self, "Invalid Input", "Please fill in all required fields correctly.")
-                return
+        if len(description) > 255:
+            QMessageBox.warning(self, "Invalid Input", "Description must be 255 characters or less.")
+            return
+        
+        # Validate notes length
+        if len(notes) > 1000:
+            QMessageBox.warning(self, "Invalid Input", "Notes must be 1000 characters or less.")
+            return
+        
+        # Validate selections
+        if category_id is None:
+            QMessageBox.warning(self, "Invalid Input", "Please select a category.")
+            return
             
-            if category_id is None:
-                QMessageBox.warning(self, "Invalid Input", "Please select a category.")
-                return
-                
-            if account_id is None:
-                QMessageBox.warning(self, "Invalid Input", "Please select an account.")
-                return
-                
-            print(f"Adding Transaction:")
-            print(f"Amount: ${amount:.2f}")
-            print(f"Description: {description}")
-            print(f"Category ID: {category_id}")
-            print(f"Account ID: {account_id}")
-            print(f"Date: {date}")
-            print(f"Type: {transaction_type}")
-            print(f"Notes: {notes}")
-                
+        if account_id is None:
+            QMessageBox.warning(self, "Invalid Input", "Please select an account.")
+            return
+            
+        print(f"Adding Transaction:")
+        print(f"Amount: ${amount:.2f}")
+        print(f"Description: {description}")
+        print(f"Category ID: {category_id}")
+        print(f"Account ID: {account_id}")
+        print(f"Date: {date}")
+        print(f"Type: {transaction_type}")
+        print(f"Notes: {notes}")
+        
+        try:
             result = self.transaction_db_service.add_transaction(
                 date, description, amount, category_id, transaction_type, account_id, notes
             )
@@ -158,8 +182,6 @@ class AddTransactionsWindow(PopUpWindow):
             else:
                 QMessageBox.warning(self, "Error", "Failed to add transaction.")
                 
-        except ValueError:
-            QMessageBox.warning(self, "Invalid Input", "Please enter a valid amount.")
         except Exception as e:
             print(f"Error adding transaction: {e}")
             QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}") 

@@ -63,26 +63,41 @@ class AddAccountsWindow(PopUpWindow):
         self.setLayout(main_layout)
     
     def add_account(self):
-        account_name = self.name_input.text()
-        balance = round(float(self.balance_input.text()), 2)
+        account_name = self.name_input.text().strip()
+        balance_text = self.balance_input.text().strip()
         account_type = self.account_type_combo.currentText()
-        
-        # Basic validation
+
+        # Validate account name
         if not account_name:
             QMessageBox.warning(self, "Invalid Input", "Please enter an account name.")
             return
         
+        if len(account_name) > 45:
+            QMessageBox.warning(self, "Invalid Input", "Account name must be 45 characters or less.")
+            return
+        
+        # Validate and convert balance
         try:
-            starting_balance = float(balance) if balance else 0.0
+            if not balance_text:
+                balance = 0.0
+            else:
+                balance = round(float(balance_text), 2)
         except ValueError:
             QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for starting balance.")
             return
         
         print(f"Adding Account:")
         print(f"Name: {account_name}")
-        print(f"Starting Balance: ${starting_balance:.2f}")
+        print(f"Starting Balance: ${balance:.2f}")
         print(f"Account Type: {account_type}")
 
-        self.account_db_service.add_account(account_name, balance, account_type)
-
-        self.accept()
+        try:
+            result = self.account_db_service.add_account(account_name, balance, account_type)
+            if result == 1:
+                QMessageBox.information(self, "Success", "Account added successfully!")
+                self.accept()
+            else:
+                QMessageBox.warning(self, "Error", "Failed to add account.")
+        except Exception as e:
+            print(f"Error adding account: {e}")
+            QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")

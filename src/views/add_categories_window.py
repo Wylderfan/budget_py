@@ -54,19 +54,30 @@ class AddCategoriesWindow(PopUpWindow):
         self.setLayout(main_layout)
 
     def add_category(self):
-        category_name = self.name_input.text()
-        category_type = self.category_type_combo.currentText()        
+        category_name = self.name_input.text().strip()
+        category_type = self.category_type_combo.currentText()
 
-        # Basic validation
+        # Validate category name
         if not category_name:
-            QMessageBox.warning(self, "Invalid Input", "Please enter an category name.")
+            QMessageBox.warning(self, "Invalid Input", "Please enter a category name.")
+            return
+            
+        if len(category_name) > 45:
+            QMessageBox.warning(self, "Invalid Input", "Category name must be 45 characters or less.")
             return
         
         print(f"Adding Category:")
         print(f"Name: {category_name}")
         print(f"Category type: {category_type}")
 
-        self.category_db_service.add_category(category_name, category_type)
-
-        self.accept()
+        try:
+            result = self.category_db_service.add_category(category_name, category_type)
+            if result == 1:
+                QMessageBox.information(self, "Success", "Category added successfully!")
+                self.accept()
+            else:
+                QMessageBox.warning(self, "Error", "Failed to add category.")
+        except Exception as e:
+            print(f"Error adding category: {e}")
+            QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")
 

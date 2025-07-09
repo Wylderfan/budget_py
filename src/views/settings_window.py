@@ -39,12 +39,44 @@ class SettingsWindow(PopUpWindow):
         self.setLayout(layout)
 
     def modify_account_value(self):
-        account = self.accounts_db_service.search_account(name=self.account_value_combo.currentText())
-        id = account[0][0] # type: ignore
-        print(f"this is the id: {id}")
-        amount = self.account_value_input.text()
-
-        return self.accounts_db_service.modify_balance(id, amount)
+        selected_account_name = self.account_value_combo.currentText()
+        amount_text = self.account_value_input.text().strip()
+        
+        # Validate account selection
+        if not selected_account_name:
+            QMessageBox.warning(self, "Invalid Input", "Please select an account.")
+            return
+            
+        # Validate amount input
+        if not amount_text:
+            QMessageBox.warning(self, "Invalid Input", "Please enter an amount.")
+            return
+            
+        try:
+            amount = round(float(amount_text), 2)
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for the amount.")
+            return
+        
+        try:
+            account = self.accounts_db_service.search_account(name=selected_account_name)
+            if not account or not isinstance(account, list) or len(account) == 0:
+                QMessageBox.warning(self, "Error", "Account not found.")
+                return
+                
+            account_id = account[0][0]
+            print(f"Modifying account ID: {account_id} with amount: ${amount:.2f}")
+            
+            result = self.accounts_db_service.modify_balance(account_id, amount)
+            if result == 1:
+                QMessageBox.information(self, "Success", "Account balance updated successfully!")
+                self.account_value_input.clear()
+            else:
+                QMessageBox.warning(self, "Error", "Failed to update account balance.")
+                
+        except Exception as e:
+            print(f"Error modifying account: {e}")
+            QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")
 
     def load_accounts(self):
         self.account_value_combo.clear()
