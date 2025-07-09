@@ -8,6 +8,7 @@ from views.add_accounts_window import AddAccountsWindow
 from views.del_accounts_window import DelAccountsWindow
 
 from .window_manager import WindowManager
+from .settings_window import SettingsWindow
 from .modify_categories import ModifyCategoriesWindow
 from .del_transactions_window import DelTransactionsWindow
 from .add_transactions_window import AddTransactionsWindow
@@ -44,7 +45,12 @@ class MainWindow(QMainWindow):
         tabs.addTab(self.create_summary_tab(), "Summary")
         tabs.addTab(self.create_reports_tab(), "Reports")
 
-        # Add a quit button
+        # Add a Settings button
+        settings_button = QPushButton("Settings")
+        settings_button.clicked.connect(lambda: self.popup_window.open_window(SettingsWindow("Modify Settings", 300, 400, self.db)))
+        layout.addWidget(settings_button)
+
+        # Add a Quit button
         quit_button = QPushButton("Quit")
         quit_button.clicked.connect(QApplication.quit)
         layout.addWidget(quit_button)

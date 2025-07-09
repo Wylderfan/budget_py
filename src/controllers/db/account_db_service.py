@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+
 from database_connector import DatabaseConnector
 
 class AccountDBService():
@@ -79,6 +80,24 @@ class AccountDBService():
         result = self.db_connector.execute_query(query)
 
         self.db_connector.close()
+
+        return result
+
+    def modify_balance(self, id, amount):
+        self.db_connector.connect()
+
+        query = """
+        UPDATE accounts
+        SET balance = %s
+        WHERE id = %s
+        """
+
+        result = self.db_connector.execute_query(query, (amount, id))
+
+        if result == 1:
+            print("Balance successfully modified")
+        else:
+            print("Error modifying balance")
 
         return result
 
