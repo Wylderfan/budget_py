@@ -99,6 +99,8 @@ class AccountDBService():
         else:
             print("Error modifying balance")
 
+        self.db_connector.close()
+
         return result
 
     def select_name_id_all_accounts(self):
