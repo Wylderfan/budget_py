@@ -45,12 +45,10 @@ class MainWindow(QMainWindow):
         tabs.addTab(self.create_summary_tab(), "Summary")
         tabs.addTab(self.create_reports_tab(), "Reports")
 
-        # Add a Settings button
         settings_button = QPushButton("Settings")
         settings_button.clicked.connect(self.handle_settings)
         layout.addWidget(settings_button)
 
-        # Add a Quit button
         quit_button = QPushButton("Quit")
         quit_button.clicked.connect(QApplication.quit)
         layout.addWidget(quit_button)
@@ -58,16 +56,17 @@ class MainWindow(QMainWindow):
         # Load initial data
         self.refresh_summary()
         self.refresh_accounts()
-        
+
+    # Close the application
     def closeEvent(self, a0):
         if self.db:
             self.db.close()
         
         super().closeEvent(a0)
         
-        # Make sure application exits
         QApplication.quit()       
 
+    # Create Tabs for the main window
     def create_budget_tab(self):
         widget = QWidget()
         layout = QVBoxLayout()
@@ -81,14 +80,11 @@ class MainWindow(QMainWindow):
 
         widget.setLayout(layout)
         return widget
-
-
         
     def create_summary_tab(self):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        # Summary table
         self.account_summary_table = QTableWidget()
         self.account_summary_table.setColumnCount(3)
         self.account_summary_table.setHorizontalHeaderLabels(["Name", "Amount", "Type"])
@@ -96,17 +92,14 @@ class MainWindow(QMainWindow):
 
         button_layout = QHBoxLayout()
 
-        # Refresh button
         refresh_btn = QPushButton("Refresh")
         refresh_btn.clicked.connect(self.refresh_accounts)
         button_layout.addWidget(refresh_btn)
  
-        # Add account button
         add_account_btn = QPushButton("Add")
         add_account_btn.clicked.connect(self.handle_add_account)
         layout.addWidget(add_account_btn)
 
-        # Delete account button
         delete_account_btn = QPushButton("Delete")
         delete_account_btn.clicked.connect(self.handle_delete_account)
         layout.addWidget(delete_account_btn)
@@ -120,26 +113,21 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        # Summary table
         self.transaction_summary_table = QTableWidget()
         self.transaction_summary_table.setColumnCount(6)
         self.transaction_summary_table.setHorizontalHeaderLabels(["Date", "Description", "Amount", "Category", "Account", "Type"])
         layout.addWidget(self.transaction_summary_table)
         
-        # Button layout for add, refresh and delete
         button_layout = QHBoxLayout()
         
-        # Add Transaction button
         add_btn = QPushButton("Add Transaction")
         add_btn.clicked.connect(self.handle_add_transaction)
         button_layout.addWidget(add_btn)
         
-        # Refresh button
         refresh_btn = QPushButton("Refresh")
         refresh_btn.clicked.connect(self.refresh_summary)
         button_layout.addWidget(refresh_btn)
         
-        # Delete button
         delete_btn = QPushButton("Delete Transaction")
         delete_btn.clicked.connect(self.handle_delete_transaction)
         button_layout.addWidget(delete_btn)
@@ -153,12 +141,12 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        # Summary will be implemented here
         layout.addWidget(QLabel("Summary coming soon"))
         
         widget.setLayout(layout)
         return widget
        
+    # Handle buttons
     def handle_add_account(self):
         self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db))
         self.refresh_accounts()
@@ -182,6 +170,7 @@ class MainWindow(QMainWindow):
         self.popup_window.open_window(DelTransactionsWindow("Delete Transactions", 400, 500, self.db))
         self.refresh_summary()
 
+    # Refresh the summary tables
     def refresh_summary(self):
         try:
             results = self.transaction_db_service.search_all()
