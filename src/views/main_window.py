@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
 
         # Add a Settings button
         settings_button = QPushButton("Settings")
-        settings_button.clicked.connect(lambda: self.popup_window.open_window(SettingsWindow("Modify Settings", 300, 400, self.db)))
+        settings_button.clicked.connect(self.handle_settings)
         layout.addWidget(settings_button)
 
         # Add a Quit button
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(QLabel("Budget coming soon..."))
 
         modify_categories = QPushButton("Modify Categories")
-        modify_categories.clicked.connect(lambda: self.popup_window.open_window(ModifyCategoriesWindow("Modify Categories", 300, 400, self.db)))
+        modify_categories.clicked.connect(self.handle_modify_categories)
         layout.addWidget(modify_categories)       
 
         widget.setLayout(layout)
@@ -103,12 +103,12 @@ class MainWindow(QMainWindow):
  
         # Add account button
         add_account_btn = QPushButton("Add")
-        add_account_btn.clicked.connect(lambda: self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db)))
+        add_account_btn.clicked.connect(self.handle_add_account)
         layout.addWidget(add_account_btn)
 
         # Delete account button
         delete_account_btn = QPushButton("Delete")
-        delete_account_btn.clicked.connect(lambda: self.popup_window.open_window(DelAccountsWindow("Delete Accounts", 300, 400, self.db)))
+        delete_account_btn.clicked.connect(self.handle_delete_account)
         layout.addWidget(delete_account_btn)
 
         layout.addLayout(button_layout)
@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
         
         # Add Transaction button
         add_btn = QPushButton("Add Transaction")
-        add_btn.clicked.connect(lambda: self.popup_window.open_window(AddTransactionsWindow("Add Transaction", 400, 500, self.db, refresh_callback=self.refresh_summary)))
+        add_btn.clicked.connect(self.handle_add_transaction)
         button_layout.addWidget(add_btn)
         
         # Refresh button
@@ -141,7 +141,7 @@ class MainWindow(QMainWindow):
         
         # Delete button
         delete_btn = QPushButton("Delete Transaction")
-        delete_btn.clicked.connect(lambda: self.popup_window.open_window(DelTransactionsWindow("Delete Transactions", 400, 500, self.db, refresh_callback=self.refresh_summary)))
+        delete_btn.clicked.connect(self.handle_delete_transaction)
         button_layout.addWidget(delete_btn)
         
         layout.addLayout(button_layout)
@@ -159,8 +159,29 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         return widget
        
+    def handle_add_account(self):
+        self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db))
+        self.refresh_accounts()
 
-            
+    def handle_settings(self):
+        self.popup_window.open_window(SettingsWindow("Modify Settings", 300, 400, self.db))
+
+    def handle_modify_categories(self):
+        self.popup_window.open_window(ModifyCategoriesWindow("Modify Categories", 300, 400, self.db))
+        self.refresh_summary()
+
+    def handle_delete_account(self):
+        self.popup_window.open_window(DelAccountsWindow("Delete Accounts", 300, 400, self.db))
+        self.refresh_accounts()
+
+    def handle_add_transaction(self):
+        self.popup_window.open_window(AddTransactionsWindow("Add Transaction", 400, 500, self.db))
+        self.refresh_summary()
+
+    def handle_delete_transaction(self):
+        self.popup_window.open_window(DelTransactionsWindow("Delete Transactions", 400, 500, self.db))
+        self.refresh_summary()
+
     def refresh_summary(self):
         try:
             results = self.transaction_db_service.search_all()
