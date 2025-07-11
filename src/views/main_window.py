@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QApplication, QComboBox, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QTableWidget, QTableWidgetItem,
     QTabWidget, QMessageBox
 )
@@ -71,14 +73,27 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        # Budget will be implemented here
-        layout.addWidget(QLabel("Budget coming soon..."))
+        date_layout = QHBoxLayout()
+
+        self.select_date_label = QLabel("Select Month:")
+        date_layout.addWidget(self.select_date_label)
+
+        self.select_month_combo = QComboBox()
+        date_layout.addWidget(self.select_month_combo)
+
+        self.select_year_combo = QComboBox()
+        date_layout.addWidget(self.select_year_combo)
+
+        layout.addLayout(date_layout)
 
         modify_categories = QPushButton("Modify Categories")
         modify_categories.clicked.connect(self.handle_modify_categories)
         layout.addWidget(modify_categories)       
 
         widget.setLayout(layout)
+
+        self.refresh_budget()
+
         return widget
         
     def create_summary_tab(self):
@@ -216,4 +231,24 @@ class MainWindow(QMainWindow):
             self.account_summary_table.setItem(i, 2, account_type)
 
         self.account_summary_table.resizeColumnsToContents()
+
+    def refresh_budget(self):
+        self.select_month_combo.addItems(["January",
+                                          "February",
+                                          "March",
+                                          "April",
+                                          "May",
+                                          "June",
+                                          "July",
+                                          "August",
+                                          "September",
+                                          "October",
+                                          "November",
+                                          "December"
+                                          ])
+        current_year = datetime.today().strftime('%Y')
+        years_to_date = []
+        for year in range(int(current_year), 2019, -1):
+            years_to_date.append(str(year))
+        self.select_year_combo.addItems(years_to_date)
 
