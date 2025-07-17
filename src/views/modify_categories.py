@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QLabel, QPushButton, QTableWidget, QVBoxLayout, QTableWidgetItem
+from PyQt6.QtWidgets import QPushButton, QTableWidget, QVBoxLayout, QTableWidgetItem
 
 from views.popup_window import PopUpWindow
 from views.window_manager import WindowManager
@@ -23,8 +23,6 @@ class ModifyCategoriesWindow(PopUpWindow):
 
     def setup_ui(self):
         layout = QVBoxLayout()
-
-        layout.addWidget(QLabel("Categories coming soon"))
 
         self.summary_table = QTableWidget()
         self.summary_table.setColumnCount(2)

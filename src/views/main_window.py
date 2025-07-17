@@ -15,6 +15,7 @@ from .modify_categories import ModifyCategoriesWindow
 from .del_transactions_window import DelTransactionsWindow
 from .add_transactions_window import AddTransactionsWindow
 
+from controllers.db.budget_db_service import BudgetDBService
 from controllers.db.transaction_db_service import TransactionDBService
 from controllers.db.account_db_service import AccountDBService
 
@@ -23,8 +24,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.db = db
         self.popup_window = WindowManager()
-        
+
         # Initialize database services
+        self.budget_db_service = BudgetDBService(self.db)
         self.transaction_db_service = TransactionDBService(self.db)
         self.account_db_service = AccountDBService(self.db)
         
@@ -86,12 +88,27 @@ class MainWindow(QMainWindow):
 
         layout.addLayout(date_layout)
 
+        budget_summary_layout = QHBoxLayout()
+
+        self.budget_summary_table = QTableWidget()
+        self.budget_summary_table.setColumnCount(4)
+        self.budget_summary_table.setHorizontalHeaderLabels(["Category Name", "Type", "Current Balance", "Goal"])
+
+        budget_summary_layout.addWidget(self.budget_summary_table)
+
+        layout.addLayout(budget_summary_layout)
+
+        refresh_budget_btn = QPushButton("Refresh Budget")
+        refresh_budget_btn.clicked.connect(self.refresh_budget)
+        layout.addWidget(refresh_budget_btn)       
+
         modify_categories = QPushButton("Modify Categories")
         modify_categories.clicked.connect(self.handle_modify_categories)
         layout.addWidget(modify_categories)       
 
         widget.setLayout(layout)
 
+        self.fetch_budget_date_combos()
         self.refresh_budget()
 
         return widget
@@ -233,6 +250,29 @@ class MainWindow(QMainWindow):
         self.account_summary_table.resizeColumnsToContents()
 
     def refresh_budget(self):
+        try:
+            budgets = self.budget_db_service.search_all()
+        except Exception as e:
+            print("Error while refreshing Budget:")
+            print(e)
+            return
+        
+        self.budget_summary_table.setRowCount(len(budgets))
+
+        for i, budget in enumerate(budgets):
+            name = QTableWidgetItem(str(budget[0]))
+            category_type = QTableWidgetItem(str(budget[1]))
+            balance = QTableWidgetItem(str(budget[2]))
+            goal = QTableWidgetItem(str(budget[3]))
+
+            self.budget_summary_table.setItem(i, 0, name)
+            self.budget_summary_table.setItem(i, 1, category_type)
+            self.budget_summary_table.setItem(i, 2, balance)
+            self.budget_summary_table.setItem(i, 3, goal)
+
+        self.budget_summary_table.resizeColumnsToContents()
+
+    def fetch_budget_date_combos(self):
         self.select_month_combo.addItems(["January",
                                           "February",
                                           "March",
@@ -251,4 +291,5 @@ class MainWindow(QMainWindow):
         for year in range(int(current_year), 2019, -1):
             years_to_date.append(str(year))
         self.select_year_combo.addItems(years_to_date)
+
 
