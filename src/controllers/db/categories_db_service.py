@@ -96,3 +96,16 @@ class CategoriesDBService():
         self.db_connector.close()
 
         return result
+
+    def select_category_types(self):
+        self.db_connector.connect()
+
+        query = """
+        SELECT type, id FROM categories
+        """
+
+        result = self.db_connector.execute_query(query)
+
+        self.db_connector.close()
+
+        return result
