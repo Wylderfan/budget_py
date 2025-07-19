@@ -93,7 +93,7 @@ class AddTransactionsWindow(PopUpWindow):
             if categories and isinstance(categories, list):
                 for category in categories:
                     # category is (name, id)
-                    self.category_combo.addItem(str(category[0]), category[1])
+                    self.category_combo.addItem(str(category[1]), category[0])
         except Exception as e:
             print(f"Error loading categories: {e}")
             QMessageBox.warning(self, "Error", "Could not load categories from database.")
@@ -106,7 +106,7 @@ class AddTransactionsWindow(PopUpWindow):
             if accounts and isinstance(accounts, list):
                 for account in accounts:
                     # account is (name, id)
-                    self.account_combo.addItem(str(account[0]), account[1])
+                    self.account_combo.addItem(str(account[1]), account[0])
         except Exception as e:
             print(f"Error loading accounts: {e}")
             QMessageBox.warning(self, "Error", "Could not load accounts from database.")

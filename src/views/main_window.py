@@ -257,20 +257,20 @@ class MainWindow(QMainWindow):
             print(e)
             return
         
-#        self.budget_summary_table.setRowCount(len(budgets))
+        self.budget_summary_table.setRowCount(len(budgets))
 
-#        for i, budget in enumerate(budgets):
-#            name = QTableWidgetItem(str(budget[0]))
-#            category_type = QTableWidgetItem(str(budget[1]))
-#            balance = QTableWidgetItem(str(budget[2]))
-#            goal = QTableWidgetItem(str(budget[3]))
+        for i, budget in enumerate(budgets):
+            name = QTableWidgetItem(str(budget[0]))
+            category_type = QTableWidgetItem(str(budget[1]))
+            balance = QTableWidgetItem(str(budget[2]))
+            goal = QTableWidgetItem(str(budget[3]))
 
-#           self.budget_summary_table.setItem(i, 0, name)
-#           self.budget_summary_table.setItem(i, 1, category_type)
-#           self.budget_summary_table.setItem(i, 2, balance)
-#           self.budget_summary_table.setItem(i, 3, goal)
+            self.budget_summary_table.setItem(i, 0, name)
+            self.budget_summary_table.setItem(i, 1, category_type)
+            self.budget_summary_table.setItem(i, 2, balance)
+            self.budget_summary_table.setItem(i, 3, goal)
 
-#       self.budget_summary_table.resizeColumnsToContents()
+        self.budget_summary_table.resizeColumnsToContents()
 
     def fetch_budget_date_combos(self):
         self.select_month_combo.addItems(["January",

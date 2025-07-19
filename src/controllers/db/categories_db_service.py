@@ -88,7 +88,7 @@ class CategoriesDBService():
         self.db_connector.connect()
 
         query = """
-        SELECT name, id FROM categories
+        SELECT id, name FROM categories
         """
 
         result = self.db_connector.execute_query(query)
@@ -101,7 +101,7 @@ class CategoriesDBService():
         self.db_connector.connect()
 
         query = """
-        SELECT type, id FROM categories
+        SELECT id, type FROM categories
         """
 
         result = self.db_connector.execute_query(query)

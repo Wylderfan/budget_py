@@ -109,7 +109,7 @@ class AccountDBService():
         self.db_connector.connect()
 
         query = """
-        SELECT name, id FROM accounts
+        SELECT id, name FROM accounts
         """
 
         result = self.db_connector.execute_query(query)
