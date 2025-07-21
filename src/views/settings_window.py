@@ -84,8 +84,7 @@ class SettingsWindow(PopUpWindow):
             accounts = self.accounts_db_service.select_name_id_all_accounts()
             if accounts and isinstance(accounts, list):
                 for account in accounts:
-                    # account is (name, id)
-                    self.account_value_combo.addItem(str(account[0]), account[1])
+                    self.account_value_combo.addItem(str(account[1]), account[0])
         except Exception as e:
             print(f"Error loading accounts: {e}")
             QMessageBox.warning(self, "Error", "Could not load accounts from database.")

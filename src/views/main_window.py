@@ -81,11 +81,9 @@ class MainWindow(QMainWindow):
         date_layout.addWidget(self.select_date_label)
 
         self.select_month_combo = QComboBox()
-        self.select_month_combo.currentTextChanged.connect(self.refresh_budget)
         date_layout.addWidget(self.select_month_combo)
 
         self.select_year_combo = QComboBox()
-        self.select_year_combo.currentTextChanged.connect(self.refresh_budget)
         date_layout.addWidget(self.select_year_combo)
 
         layout.addLayout(date_layout)
@@ -253,20 +251,17 @@ class MainWindow(QMainWindow):
 
     def refresh_budget(self):
         try:
-            # Get selected month and year
             selected_month_name = self.select_month_combo.currentText()
             selected_year = self.select_year_combo.currentText()
             
-            # Convert month name to number for MySQL
-            month_mapping = {
+            month_int_mapping = {
                 "January": 1, "February": 2, "March": 3, "April": 4,
                 "May": 5, "June": 6, "July": 7, "August": 8,
                 "September": 9, "October": 10, "November": 11, "December": 12
             }
             
-            # Only filter if both month and year are selected
             if selected_month_name and selected_year:
-                selected_month = month_mapping.get(selected_month_name)
+                selected_month = month_int_mapping.get(selected_month_name)
                 budgets = self.budget_db_service.search_all(year=int(selected_year), month=selected_month)
             else:
                 budgets = self.budget_db_service.search_all()
@@ -292,23 +287,20 @@ class MainWindow(QMainWindow):
         self.budget_summary_table.resizeColumnsToContents()
 
     def fetch_budget_date_combos(self):
-        self.select_month_combo.addItems(["January",
-                                          "February",
-                                          "March",
-                                          "April",
-                                          "May",
-                                          "June",
-                                          "July",
-                                          "August",
-                                          "September",
-                                          "October",
-                                          "November",
-                                          "December"
-                                          ])
+        months = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"]
+        
+        self.select_month_combo.addItems(months)
+        
         current_year = datetime.today().strftime('%Y')
+        current_month = datetime.today().strftime('%B')  # Full month name
+        
         years_to_date = []
         for year in range(int(current_year), 2019, -1):
             years_to_date.append(str(year))
         self.select_year_combo.addItems(years_to_date)
+        
+        self.select_month_combo.setCurrentText(current_month)
+        self.select_year_combo.setCurrentText(current_year)
 
 

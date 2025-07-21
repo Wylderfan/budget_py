@@ -23,8 +23,8 @@ class DelAccountsWindow(PopUpWindow):
 
         self.select_account_combo = QComboBox()
         accounts = self.account_db_service.select_name_id_all_accounts() # name , id tuple
-        self.account_names = [row[0] for row in accounts] # type: ignore
-        self.account_ids = [row[1] for row in accounts] # type: ignore
+        self.account_names = [row[1] for row in accounts] # type: ignore
+        self.account_ids = [row[0] for row in accounts] # type: ignore
         self.select_account_combo.addItems(self.account_names) # type: ignore
         form_layout.addRow("Select Account:", self.select_account_combo)
 

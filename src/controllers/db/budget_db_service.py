@@ -34,14 +34,37 @@ class BudgetDBService():
             FROM budget_goals
             """
         elif month is not None and year is not None:
-            return
+            balance_query = """
+            SELECT
+                t.category,
+                SUM(CASE
+                    WHEN t.type = 'Income' THEN -t.amount
+                    ELSE t.amount
+                END) as net_amount
+            FROM transactions t
+            LEFT JOIN categories c ON t.category = c.id
+            WHERE YEAR(t.date) = %s AND MONTH(t.date) = %s
+            GROUP BY t.category
+            """
+            
+            goals_query = """
+            SELECT 
+                category_id,
+                goal
+            FROM budget_goals
+            """
         else:
             print("Month or Year not selected!")
             return None
 
         self.db_connector.connect()
 
-        balance_result = self.db_connector.execute_query(balance_query)
+        # Execute queries with parameters if filtering by month/year
+        if month is not None and year is not None:
+            balance_result = self.db_connector.execute_query(balance_query, (year, month))
+        else:
+            balance_result = self.db_connector.execute_query(balance_query)
+            
         goals_result = self.db_connector.execute_query(goals_query)
 
         self.db_connector.close()
