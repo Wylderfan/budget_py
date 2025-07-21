@@ -15,30 +15,36 @@ class BudgetDBService():
         category_types = self.categories_db_service.select_category_types()
 
         balance_query = """
-        SELECT 
-            category,
-            SUM(amount) as total_spent
-        FROM transactions 
-        GROUP BY category
+        SELECT
+            t.category,
+            SUM(CASE
+                WHEN t.type = 'Income' THEN -t.amount
+                ELSE t.amount
+            END) as net_amount
+        FROM transactions t
+        LEFT JOIN categories c ON t.category = c.id
+        GROUP BY t.category
         """
-        self.db_connector.connect()
-        balance_result = self.db_connector.execute_query(balance_query)
-        
-        # Add goals query
+
         goals_query = """
         SELECT 
             category_id,
             goal
         FROM budget_goals
         """
+
+        self.db_connector.connect()
+
+        balance_result = self.db_connector.execute_query(balance_query)
         goals_result = self.db_connector.execute_query(goals_query)
+
         self.db_connector.close()
 
         # Sort each by ID and create lookup dictionaries
-        names_dict = {item[0]: item[1] for item in sorted(category_names)}
-        types_dict = {item[0]: item[1] for item in sorted(category_types)}
-        balance_dict = {item[0]: item[1] for item in sorted(balance_result)} if balance_result else {}
-        goals_dict = {item[0]: item[1] for item in sorted(goals_result)} if goals_result else {}
+        names_dict = {item[0]: item[1] for item in sorted(category_names)} # type: ignore
+        types_dict = {item[0]: item[1] for item in sorted(category_types)} # type: ignore
+        balance_dict = {item[0]: item[1] for item in sorted(balance_result)} if balance_result else {} # type: ignore
+        goals_dict = {item[0]: item[1] for item in sorted(goals_result)} if goals_result else {} # type: ignore
 
         # Get all unique IDs and sort them
         all_ids = sorted(set(names_dict.keys()) | set(types_dict.keys()) | set(balance_dict.keys()) | set(goals_dict.keys()))

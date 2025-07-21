@@ -23,7 +23,7 @@ class DelCategoriesWindow(PopUpWindow):
         form_layout = QFormLayout()
 
         self.select_category_combo = QComboBox()
-        self.category_names = [row[0] for row in self.categories_db_service.select_category_names()] #type: ignore
+        self.category_names = [row[1] for row in self.categories_db_service.select_category_names()] #type: ignore
 
         self.select_category_combo.addItems(self.category_names) # type: ignore
 
