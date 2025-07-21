@@ -8,30 +8,36 @@ class BudgetDBService():
 
         self.categories_db_service = CategoriesDBService(self.db_connector)
 
-    def search_all(self):
+    def search_all(self, month=None, year=None):
         """Returns category_names, category_types, (SUM of all transactions with same category_id), goals"""
 
         category_names = self.categories_db_service.select_category_names()
         category_types = self.categories_db_service.select_category_types()
 
-        balance_query = """
-        SELECT
-            t.category,
-            SUM(CASE
-                WHEN t.type = 'Income' THEN -t.amount
-                ELSE t.amount
-            END) as net_amount
-        FROM transactions t
-        LEFT JOIN categories c ON t.category = c.id
-        GROUP BY t.category
-        """
+        if month is None and year is None:
+            balance_query = """
+            SELECT
+                t.category,
+                SUM(CASE
+                    WHEN t.type = 'Income' THEN -t.amount
+                    ELSE t.amount
+                END) as net_amount
+            FROM transactions t
+            LEFT JOIN categories c ON t.category = c.id
+            GROUP BY t.category
+            """
 
-        goals_query = """
-        SELECT 
-            category_id,
-            goal
-        FROM budget_goals
-        """
+            goals_query = """
+            SELECT 
+                category_id,
+                goal
+            FROM budget_goals
+            """
+        elif month is not None and year is not None:
+            return
+        else:
+            print("Month or Year not selected!")
+            return None
 
         self.db_connector.connect()
 
