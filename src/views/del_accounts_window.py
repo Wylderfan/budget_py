@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QCheckBox, QComboBox, QFormLayout, QHBoxLayout, QLab
 from PyQt6.QtCore import Qt
 
 from controllers.db.account_db_service import AccountDBService
+from controllers.db.transaction_db_service import TransactionDBService
 from views.popup_window import PopUpWindow
 
 class DelAccountsWindow(PopUpWindow):
@@ -9,6 +10,7 @@ class DelAccountsWindow(PopUpWindow):
         super().__init__(window_name, min_width, min_height, db, parent)
 
         self.account_db_service = AccountDBService(self.get_db())
+        self.transaction_db_service = TransactionDBService(self.get_db())
 
         self.setup_ui()
 
@@ -97,9 +99,15 @@ class DelAccountsWindow(PopUpWindow):
 
         if is_transfer and transfer_account and transfer_account != selected_account:
             print(f"Transferring transactions to: {transfer_account}")
-            # TODO: Implement transaction transfer logic here
-            # transfer_account_id = self.id_from_name(transfer_account)
-            # self.account_db_service.transfer_transactions(account_id, transfer_account_id)
+            transfer_result = self.account_db_service.transfer_transactions(self.id_from_name(selected_account), self.id_from_name(transfer_account))
+            print(f"Transactions moved: {transfer_result}")
+        else:
+            print("Deleting transactions from selected account")
+            try:
+                del_transactions_result = self.transaction_db_service.del_account_transactions(self.account_db_service.search_account(name=selected_account))
+                print(f"Result of Account wide deletion of transactions: {del_transactions_result}")
+            except Exception as e:
+                print(f"Error deleting transactions from {selected_account}")
 
         try:
             account_id = self.id_from_name(selected_account)

@@ -1,5 +1,4 @@
 from datetime import datetime
-import re
 
 from database_connector import DatabaseConnector
 
@@ -117,3 +116,14 @@ class AccountDBService():
         self.db_connector.close()
 
         return result
+
+    def transfer_transactions(self, account_id, transfer_account_id):
+        query = """
+        UPDATE transactions
+        SET account = %s
+        WHERE account = %s
+        """
+
+        rows_affected = self.db_connector.execute_query(query, (transfer_account_id, account_id))
+
+        return rows_affected
