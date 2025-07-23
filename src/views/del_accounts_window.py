@@ -34,7 +34,7 @@ class DelAccountsWindow(PopUpWindow):
         form_layout.addRow("Transfer transactions to separate account:", self.transfer_checkbox)
 
         self.select_transfer_combo = QComboBox()
-        self.select_transfer_combo.addItems(self.account_names) # type: ignore
+        self.select_transfer_combo.addItems(["None"] + self.account_names) # type: ignore
         form_layout.addRow("Select account to transfer too:", self.select_transfer_combo)
 
         main_layout.addLayout(form_layout)
@@ -67,6 +67,8 @@ class DelAccountsWindow(PopUpWindow):
         selected_account = self.select_account_combo.currentText()
         is_transfer = True if self.transfer_checkbox.checkState() == Qt.CheckState.Checked else False
         transfer_account = self.select_transfer_combo.currentText() if is_transfer else None
+        if self.select_transfer_combo.currentIndex() == 0:
+            transfer_account = None
 
         if not selected_account:
             QMessageBox.warning(self, "Error", "No account selected.")
