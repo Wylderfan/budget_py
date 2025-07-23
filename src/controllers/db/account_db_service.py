@@ -118,12 +118,23 @@ class AccountDBService():
         return result
 
     def transfer_transactions(self, account_id, transfer_account_id):
+        self.db_connector.connect()
+        
         query = """
         UPDATE transactions
         SET account = %s
         WHERE account = %s
         """
-
-        rows_affected = self.db_connector.execute_query(query, (transfer_account_id, account_id))
+        
+        try:
+            self.db_connector.set_safe_updates(False)
+            rows_affected = self.db_connector.execute_query(query, (transfer_account_id, account_id))
+            self.db_connector.set_safe_updates(True)
+        except Exception as e:
+            self.db_connector.set_safe_updates(True)
+            print(f"Error transferring transactions: {e}")
+            rows_affected = None
+        
+        self.db_connector.close()
 
         return rows_affected

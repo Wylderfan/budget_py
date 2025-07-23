@@ -72,7 +72,6 @@ class DelAccountsWindow(PopUpWindow):
             QMessageBox.warning(self, "Error", "No account selected.")
             return
 
-        # Create confirmation message
         confirmation_msg = f"Are you sure you want to delete this account?\n\nAccount: {selected_account}"
         if is_transfer and transfer_account and transfer_account != selected_account:
             confirmation_msg += f"\n\nAll transactions will be transferred to: {transfer_account}"
@@ -82,7 +81,6 @@ class DelAccountsWindow(PopUpWindow):
         else:
             confirmation_msg += "\n\nWarning: All transactions in this account will be permanently deleted!"
 
-        # Verification dialog
         reply = QMessageBox.question(
             self,
             "Confirm Account Deletion",

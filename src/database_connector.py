@@ -53,3 +53,12 @@ class DatabaseConnector:
             self.connection.close() # type: ignore
             print("MySQL connection is closed")
 
+    def set_safe_updates(self, is_safe: bool):
+        if self.connection and self.connection.is_connected(): # type: ignore
+            query = """
+            SET SQL_SAFE_UPDATES = %s
+            """
+            return self.execute_query(query, (1 if is_safe else 0,))
+        else:
+            return None
+
