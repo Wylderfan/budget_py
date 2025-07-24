@@ -25,14 +25,17 @@ class TransactionDBService():
         return result
 
     def del_account_transactions(self, account_id):
+        self.db_connector.connect()
         query = """
         DELETE FROM transactions WHERE account = %s
         """
         
+        self.db_connector.set_safe_updates(False)
         result = self.db_connector.execute_query(query, (account_id,))
+        self.db_connector.set_safe_updates(True)
 
-        print(f"This is the result:{result}")
-        # START HERE
+        self.db_connector.close()
+        return result
 
     def del_transaction(self, id):
         self.db_connector.connect()
