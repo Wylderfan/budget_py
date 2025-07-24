@@ -138,3 +138,18 @@ class AccountDBService():
         self.db_connector.close()
 
         return rows_affected
+
+    def add_transaction(self, id, amount):
+        self.db_connector.connect()
+
+        query = """
+        UPDATE accounts
+        SET balance = balance + %s
+        WHERE id = %s
+        """
+
+        rows_affected = self.db_connector.execute_query(query, (amount, id,))
+        
+        self.db_connector.close()
+        
+        return rows_affected

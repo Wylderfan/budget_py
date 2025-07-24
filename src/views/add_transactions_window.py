@@ -120,7 +120,6 @@ class AddTransactionsWindow(PopUpWindow):
         transaction_type = self.type_combo.currentText()
         notes = self.notes_input.text().strip()
         
-        # Validate amount
         if not amount_text:
             QMessageBox.warning(self, "Invalid Input", "Please enter an amount.")
             return
@@ -134,7 +133,6 @@ class AddTransactionsWindow(PopUpWindow):
             QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for amount.")
             return
         
-        # Validate description
         if not description:
             QMessageBox.warning(self, "Invalid Input", "Please enter a description.")
             return
@@ -143,12 +141,10 @@ class AddTransactionsWindow(PopUpWindow):
             QMessageBox.warning(self, "Invalid Input", "Description must be 255 characters or less.")
             return
         
-        # Validate notes length
         if len(notes) > 1000:
             QMessageBox.warning(self, "Invalid Input", "Notes must be 1000 characters or less.")
             return
         
-        # Validate selections
         if category_id is None:
             QMessageBox.warning(self, "Invalid Input", "Please select a category.")
             return
@@ -167,21 +163,22 @@ class AddTransactionsWindow(PopUpWindow):
         print(f"Notes: {notes}")
         
         try:
-            result = self.transaction_db_service.add_transaction(
+            transaction_result = self.transaction_db_service.add_transaction(
                 date, description, amount, category_id, transaction_type, account_id, notes
             )
+            account_result = self.accounts_db_service.add_transaction(account_id, amount if transaction_type == "Income" else -amount)
             
-            if result == 1:
-                QMessageBox.information(self, "Success", "Transaction added successfully!")
-                
-                # Refresh the main window's transaction table if callback provided
-                if self.refresh_callback:
-                    self.refresh_callback()
-                
+            if transaction_result == 1 and account_result == 1:
+                QMessageBox.information(self, "Success", "Transaction added successfully and account was updated.")
+                self.accept()
+            elif transaction_result == 1:
+                QMessageBox.warning(self, "Warning", "Transaction added successfully but account was not updated")
                 self.accept()
             else:
                 QMessageBox.warning(self, "Error", "Failed to add transaction.")
+
                 
         except Exception as e:
             print(f"Error adding transaction: {e}")
             QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}") 
+
