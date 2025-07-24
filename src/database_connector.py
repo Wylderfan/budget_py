@@ -41,7 +41,7 @@ class DatabaseConnector:
                         # Return the number of affected rows
                         return self.cursor.rowcount # type: ignore
                 except mysql.connector.Error as e:
-                    print(f"Error executing query: {e}")
+                    print(f"Error executing '{query}':\n\n {e}")
                     return None
             else:
                 print("Not connected to the database.")
