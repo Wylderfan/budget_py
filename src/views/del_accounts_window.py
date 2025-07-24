@@ -104,7 +104,8 @@ class DelAccountsWindow(PopUpWindow):
         else:
             print("Deleting transactions from selected account")
             try:
-                del_transactions_result = self.transaction_db_service.del_account_transactions(self.account_db_service.search_account(name=selected_account))
+                id = self.account_db_service.search_account(name=selected_account)[0][0] # type: ignore
+                del_transactions_result = self.transaction_db_service.del_account_transactions(id)
                 print(f"Result of Account wide deletion of transactions: {del_transactions_result}")
             except Exception as e:
                 print(f"Error deleting transactions from {selected_account}")
