@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QCheckBox, QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QMessageBox
+from PyQt6.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QMessageBox
 from PyQt6.QtCore import Qt
 
 from controllers.db.account_db_service import AccountDBService
@@ -29,9 +29,6 @@ class DelAccountsWindow(PopUpWindow):
         self.account_ids = [row[0] for row in accounts] # type: ignore
         self.select_account_combo.addItems(self.account_names) # type: ignore
         form_layout.addRow("Select Account:", self.select_account_combo)
-
-        self.transfer_checkbox = QCheckBox()
-        form_layout.addRow("Transfer transactions to separate account:", self.transfer_checkbox)
 
         self.select_transfer_combo = QComboBox()
         self.select_transfer_combo.addItems(["None"] + self.account_names) # type: ignore
@@ -65,10 +62,8 @@ class DelAccountsWindow(PopUpWindow):
         
     def del_account(self):
         selected_account = self.select_account_combo.currentText()
-        is_transfer = True if self.transfer_checkbox.checkState() == Qt.CheckState.Checked else False
-        transfer_account = self.select_transfer_combo.currentText() if is_transfer else None
-        if self.select_transfer_combo.currentIndex() == 0:
-            transfer_account = None
+        transfer_account = self.select_transfer_combo.currentText() if self.select_transfer_combo.currentIndex() > 0 else None
+        is_transfer = True if transfer_account else False
 
         if not selected_account:
             QMessageBox.warning(self, "Error", "No account selected.")

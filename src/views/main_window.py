@@ -49,14 +49,17 @@ class MainWindow(QMainWindow):
         tabs.addTab(self.create_summary_tab(), "Summary")
         tabs.addTab(self.create_reports_tab(), "Reports")
 
+        button_layout = QHBoxLayout(central_widget)
         settings_button = QPushButton("Settings")
         settings_button.clicked.connect(self.handle_settings)
-        layout.addWidget(settings_button)
+        button_layout.addWidget(settings_button)
 
         quit_button = QPushButton("Quit")
         quit_button.clicked.connect(QApplication.quit)
-        layout.addWidget(quit_button)
+        button_layout.addWidget(quit_button)
         
+        layout.addLayout(button_layout)
+
         # Load initial data
         self.refresh_summary()
         self.refresh_accounts()
@@ -98,13 +101,17 @@ class MainWindow(QMainWindow):
 
         layout.addLayout(budget_summary_layout)
 
+        button_layout = QHBoxLayout()
+
         refresh_budget_btn = QPushButton("Refresh Budget")
         refresh_budget_btn.clicked.connect(self.refresh_budget)
-        layout.addWidget(refresh_budget_btn)       
+        button_layout.addWidget(refresh_budget_btn)       
 
         modify_categories = QPushButton("Modify Categories")
         modify_categories.clicked.connect(self.handle_modify_categories)
-        layout.addWidget(modify_categories)       
+        button_layout.addWidget(modify_categories)       
+
+        layout.addLayout(button_layout)
 
         widget.setLayout(layout)
 
@@ -130,11 +137,11 @@ class MainWindow(QMainWindow):
  
         add_account_btn = QPushButton("Add")
         add_account_btn.clicked.connect(self.handle_add_account)
-        layout.addWidget(add_account_btn)
+        button_layout.addWidget(add_account_btn)
 
         delete_account_btn = QPushButton("Delete")
         delete_account_btn.clicked.connect(self.handle_delete_account)
-        layout.addWidget(delete_account_btn)
+        button_layout.addWidget(delete_account_btn)
 
         layout.addLayout(button_layout)
         
