@@ -1,0 +1,54 @@
+{
+  "account_types": [
+    {
+      "name": "Chequing",
+      "display_name": "Chequing",
+      "is_credit": false
+    },
+    {
+      "name": "Savings", 
+      "display_name": "Savings",
+      "is_credit": false
+    },
+    {
+      "name": "Credit Card",
+      "display_name": "Credit Card", 
+      "is_credit": true
+    },
+    {
+      "name": "Line of Credit",
+      "display_name": "Line of Credit",
+      "is_credit": true
+    },
+    {
+      "name": "Loan",
+      "display_name": "Loan",
+      "is_credit": true
+    },
+    {
+      "name": "Mortgage",
+      "display_name": "Mortgage",
+      "is_credit": true
+    },
+    {
+      "name": "Student Loan",
+      "display_name": "Student Loan",
+      "is_credit": true
+    },
+    {
+      "name": "Car Loan",
+      "display_name": "Car Loan",
+      "is_credit": true
+    },
+    {
+      "name": "Personal Loan",
+      "display_name": "Personal Loan",
+      "is_credit": true
+    },
+    {
+      "name": "Home Equity Loan",
+      "display_name": "Home Equity Loan",
+      "is_credit": true
+    }
+  ]
+} 
