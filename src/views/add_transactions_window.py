@@ -58,7 +58,7 @@ class AddTransactionsWindow(PopUpWindow):
         
         # Transaction type combo box
         self.type_combo = QComboBox()
-        self.type_combo.addItems(["Expense", "Income"])
+        self.type_combo.addItems(["Expense", "Income", "Transfer"])
         form_layout.addRow("Type:", self.type_combo)
         
         # Notes input
