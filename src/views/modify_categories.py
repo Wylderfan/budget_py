@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QPushButton, QTableWidget, QVBoxLayout, QTableWidgetItem
+from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout, QTableWidgetItem
 
 from views.popup_window import PopUpWindow
 from views.window_manager import WindowManager
@@ -29,13 +29,17 @@ class ModifyCategoriesWindow(PopUpWindow):
         self.summary_table.setHorizontalHeaderLabels(["Name", "Type"])
         layout.addWidget(self.summary_table)
 
+        button_layout = QHBoxLayout()
+
         add_category_btn = QPushButton("Add")
         add_category_btn.clicked.connect(lambda: self.popup_window.open_window(AddCategoriesWindow("Add Categories", 300, 400, self.db)))
-        layout.addWidget(add_category_btn)
+        button_layout.addWidget(add_category_btn)
 
         del_category_btn = QPushButton("Delete")
         del_category_btn.clicked.connect(lambda: self.popup_window.open_window(DelCategoriesWindow("Delete Categories", 300, 400, self.db)))
-        layout.addWidget(del_category_btn)
+        button_layout.addWidget(del_category_btn)
+
+        layout.addLayout(button_layout)
 
         self.setLayout(layout)
 
