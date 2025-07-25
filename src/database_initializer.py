@@ -30,6 +30,12 @@ class DatabaseInitializer:
                 'name': 'VARCHAR(45) NOT NULL',
                 'date_created': 'DATE',
                 'type': 'VARCHAR(45) NOT NULL'
+            },
+            'budget_goals': {
+                'id': 'INT AUTO_INCREMENT PRIMARY KEY',
+                'category_id': 'INT NOT NULL',
+                'goal': 'DECIMAL(10,2) NOT NULL',
+                'date_created': 'DATE'
             }
         }
     
