@@ -6,12 +6,14 @@ from PyQt6.QtCore import Qt
 from views.popup_window import PopUpWindow
 
 from controllers.db.account_db_service import AccountDBService
+from config.config_loader import ConfigLoader
 
 class AddAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, db, parent)
 
         self.account_db_service = AccountDBService(self.get_db())
+        self.json_config_loader = ConfigLoader()
 
         self.setup_ui()
 
@@ -35,12 +37,8 @@ class AddAccountsWindow(PopUpWindow):
         
         # Account type dropdown
         self.account_type_combo = QComboBox()
-        self.account_type_combo.addItems([
-            "Chequing",
-            "Savings", 
-            "Credit Card",
-            "Line of Credit"
-        ])
+        account_types = self.json_config_loader.get_account_types()
+        self.account_type_combo.addItems(account_types)
         form_layout.addRow("Account Type:", self.account_type_combo)
         
         main_layout.addLayout(form_layout)

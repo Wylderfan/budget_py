@@ -1,0 +1,24 @@
+{
+  "account_types": [
+    {
+      "name": "Chequing",
+      "display_name": "Chequing",
+      "is_credit": false
+    },
+    {
+      "name": "Savings", 
+      "display_name": "Savings",
+      "is_credit": false
+    },
+    {
+      "name": "Credit Card",
+      "display_name": "Credit Card", 
+      "is_credit": true
+    },
+    {
+      "name": "Line of Credit",
+      "display_name": "Line of Credit",
+      "is_credit": true
+    }
+  ]
+} 

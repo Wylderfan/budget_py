@@ -1,17 +1,16 @@
 from datetime import datetime
 
 from database_connector import DatabaseConnector
+from config.config_loader import ConfigLoader
 
 class AccountDBService():
     def __init__(self, db_connector) -> None:
         self.db_connector: DatabaseConnector = db_connector
+        self.json_config_loader = ConfigLoader()
         
     def add_account(self, name, balance, account_type):
         date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        if account_type.lower() == "credit card" or account_type.lower() == "line of credit": # TODO change to search env file for proper sorting
-            is_credit = True
-        else:
-            is_credit = False
+        is_credit = self.json_config_loader.is_credit_account(account_type)
         self.db_connector.connect()
 
         insert_query = """
