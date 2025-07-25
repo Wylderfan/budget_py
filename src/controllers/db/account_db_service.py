@@ -143,11 +143,14 @@ class AccountDBService():
 
         query = """
         UPDATE accounts
-        SET balance = balance + %s
+        SET balance = balance + CASE
+            WHEN is_credit = TRUE THEN -%s
+            ELSE %s
+        END
         WHERE id = %s
         """
 
-        rows_affected = self.db_connector.execute_query(query, (amount, id,))
+        rows_affected = self.db_connector.execute_query(query, (amount, amount, id,))
         
         self.db_connector.close()
         
