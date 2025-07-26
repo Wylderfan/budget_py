@@ -12,7 +12,7 @@ class DatabaseInitializer:
                 'date': 'DATE NOT NULL',
                 'description': 'VARCHAR(255) NOT NULL',
                 'amount': 'DECIMAL(10,2) NOT NULL',
-                'category': 'INT NOT NULL',
+                'category': 'INT',
                 'type': 'VARCHAR(10) NOT NULL',
                 'notes': 'VARCHAR(1000)',
                 'account': 'INT NOT NULL'
