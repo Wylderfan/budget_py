@@ -1,8 +1,11 @@
+from controllers.db.account_db_service import AccountDBService
 from database_connector import DatabaseConnector
 
 class TransactionDBService():
     def __init__(self, db_connector) -> None:
         self.db_connector: DatabaseConnector = db_connector
+
+        self.account_db_service = AccountDBService(self.db_connector)
 
     def add_transaction(self, date, description, amount, category_id, transaction_type, account_id, notes=""):
         self.db_connector.connect()
@@ -27,7 +30,10 @@ class TransactionDBService():
     def add_transfer(self, date, amount, from_account, to_account, notes):
         self.db_connector.connect()
 
-        description = f"Transfer from {from_account} to {to_account}"
+        from_account_name = self.account_db_service.search_account(id=from_account)[1] # type: ignore
+        to_account_name = self.account_db_service.search_account(id=to_account)[1] # type: ignore
+
+        description = f"Transfer from {from_account_name} to {to_account_name}"
         transaction_type = "Transfer"
 
         query = """
