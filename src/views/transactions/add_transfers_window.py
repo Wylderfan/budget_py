@@ -73,11 +73,10 @@ class AddTransfersWindow(PopUpWindow):
             accounts = self.accounts_db_service.select_name_id_all_accounts()
             if accounts and isinstance(accounts, list):
                 for account in accounts:
-                    # account is (name, id)
-                    self.to_account_combo.addItem(str(account[1]), account[0])
+                    self.from_account_combo.addItem(str(account[1]), account[0])
                 offset_accounts = accounts[1:] + accounts[0:1]
                 for account in offset_accounts:    
-                    self.from_account_combo.addItem(str(account[1]), account[0])
+                    self.to_account_combo.addItem(str(account[1]), account[0])
         except Exception as e:
             print(f"Error loading accounts: {e}")
             QMessageBox.warning(self, "Error", "Could not load accounts from database.")
