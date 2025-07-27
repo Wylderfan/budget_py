@@ -193,13 +193,14 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         return widget
        
-    # Handle buttons
     def handle_add_account(self):
         self.popup_window.open_window(AddAccountsWindow("Add Accounts", 300, 400, self.db))
         self.refresh_accounts()
 
     def handle_settings(self):
         self.popup_window.open_window(SettingsWindow("Modify Settings", 300, 400, self.db))
+        self.refresh_accounts()
+        self.refresh_summary()
 
     def handle_modify_categories(self):
         self.popup_window.open_window(ModifyCategoriesWindow("Modify Categories", 300, 400, self.db))
@@ -208,17 +209,22 @@ class MainWindow(QMainWindow):
     def handle_delete_account(self):
         self.popup_window.open_window(DelAccountsWindow("Delete Accounts", 300, 400, self.db))
         self.refresh_accounts()
+        self.refresh_summary()
 
     def handle_add_transaction(self):
         self.popup_window.open_window(AddTransactionsWindow("Add Transaction", 400, 500, self.db))
+        self.refresh_accounts()
         self.refresh_summary()
 
     def handle_delete_transaction(self):
         self.popup_window.open_window(DelTransactionsWindow("Delete Transaction", 400, 500, self.db))
         self.refresh_summary()
+        #TODO add in transaction reversal on account balance
 
     def handle_add_transfer(self):
         self.popup_window.open_window(AddTransfersWindow("Add Transfer", 400, 500, self.db))
+        self.refresh_accounts()
+        self.refresh_summary()
 
     def refresh_summary(self):
         try:
