@@ -125,11 +125,11 @@ class AddTransfersWindow(PopUpWindow):
             )
             account_result = self.accounts_db_service.add_transfer(from_account_id, to_account_id, amount)
             
-            if transfer_result == 1 and account_result == 1:
-                QMessageBox.information(self, "Success", "Transfer added successfully and account was updated.")
+            if transfer_result == 1 and account_result == 2:
+                QMessageBox.information(self, "Success", "Transfer added successfully and both accounts were updated.")
                 self.accept()
             elif transfer_result == 1:
-                QMessageBox.warning(self, "Warning", "Transfer added successfully but account was not updated")
+                QMessageBox.warning(self, "Warning", "Transfer added successfully but accounts were not updated")
                 self.accept()
             else:
                 QMessageBox.warning(self, "Error", "Failed to add transfer.")
