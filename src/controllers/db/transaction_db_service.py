@@ -30,8 +30,8 @@ class TransactionDBService():
     def add_transfer(self, date, amount, from_account, to_account, notes):
         self.db_connector.connect()
 
-        from_account_name = self.account_db_service.search_account(id=from_account)[1] # type: ignore
-        to_account_name = self.account_db_service.search_account(id=to_account)[1] # type: ignore
+        from_account_name = self.account_db_service.search_account(id=from_account)[0][1] # type: ignore
+        to_account_name = self.account_db_service.search_account(id=to_account)[0][1] # type: ignore
 
         description = f"Transfer from {from_account_name} to {to_account_name}"
         transaction_type = "Transfer"
