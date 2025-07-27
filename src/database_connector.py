@@ -18,7 +18,7 @@ class DatabaseConnector:
                 database=self.database
             )
             self.cursor = self.connection.cursor()
-            print("Successfully connected to the database.")
+#            print("Successfully connected to the database.")
         except (mysql.connector.Error, Exception) as e:
             print(f"Error connecting to MySQL: {e}")
             self.connection = None
@@ -51,7 +51,7 @@ class DatabaseConnector:
         if self.connection and self.connection.is_connected(): # type: ignore
             self.cursor.close() # type: ignore
             self.connection.close() # type: ignore
-            print("MySQL connection is closed")
+#            print("MySQL connection is closed")
 
     def set_safe_updates(self, is_safe: bool):
         if self.connection and self.connection.is_connected(): # type: ignore
