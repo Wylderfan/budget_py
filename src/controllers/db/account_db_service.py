@@ -155,3 +155,24 @@ class AccountDBService():
         self.db_connector.close()
         
         return rows_affected
+
+    def add_transfer(self, from_account_id, to_account_id, amount):
+        self.db_connector.connect()
+
+        query = """
+        WITH transfer_data AS (
+            SELECT %s as from_id, %s as to_id, %s as amount
+        )
+        UPDATE accounts
+        JOIN transfer_data ON accounts.id IN (transfer_data.from_id, transfer_data.to_id)
+        SET balance = balance + CASE
+            WHEN accounts.id = transfer_data.from_id THEN -transfer_data.amount
+            WHEN accounts.id = transfer_data.to_id THEN transfer_data.amount
+        END
+        """
+
+        result = self.db_connector.execute_query(query, (from_account_id, to_account_id, amount))
+
+        self.db_connector.close()
+
+        return result

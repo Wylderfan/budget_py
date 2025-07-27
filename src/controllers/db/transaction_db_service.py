@@ -24,6 +24,21 @@ class TransactionDBService():
         self.db_connector.close()
         return result
 
+    def add_transfer(self, date, amount, from_account, to_account, notes):
+        self.db_connector.connect()
+
+        description = f"Transfer from {from_account} to {to_account}"
+        transaction_type = "Transfer"
+
+        query = """
+        INSERT INTO transactions (date, description, amount, type, account, notes)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+
+        result = self.db_connector.execute_query(query, (date, description, amount, transaction_type, to_account, notes))
+        self.db_connector.close()
+        return result
+
     def del_account_transactions(self, account_id):
         self.db_connector.connect()
         query = """

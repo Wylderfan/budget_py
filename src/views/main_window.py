@@ -6,14 +6,15 @@ from PyQt6.QtWidgets import (
     QTabWidget, QMessageBox
 )
 
-from views.add_accounts_window import AddAccountsWindow
-from views.del_accounts_window import DelAccountsWindow
 
 from .window_manager import WindowManager
 from .settings_window import SettingsWindow
 from .modify_categories import ModifyCategoriesWindow
 from .del_transactions_window import DelTransactionsWindow
 from .add_transactions_window import AddTransactionsWindow
+from .add_accounts_window import AddAccountsWindow
+from .add_transfers_window import AddTransfersWindow
+from .del_accounts_window import DelAccountsWindow
 
 from controllers.db.budget_db_service import BudgetDBService
 from controllers.db.transaction_db_service import TransactionDBService
@@ -129,21 +130,28 @@ class MainWindow(QMainWindow):
         self.account_summary_table.setHorizontalHeaderLabels(["Name", "Amount", "Type"])
         layout.addWidget(self.account_summary_table)
 
-        button_layout = QHBoxLayout()
+        button_layout_top = QHBoxLayout()
 
         refresh_btn = QPushButton("Refresh")
         refresh_btn.clicked.connect(self.refresh_accounts)
-        button_layout.addWidget(refresh_btn)
+        button_layout_top.addWidget(refresh_btn)
+
+        add_transfer_btn = QPushButton("Add Account Transfer")
+        add_transfer_btn.clicked.connect(self.handle_add_transfer)
+        button_layout_top.addWidget(add_transfer_btn)
  
+        button_layout_bottom = QHBoxLayout()
+
         add_account_btn = QPushButton("Add")
         add_account_btn.clicked.connect(self.handle_add_account)
-        button_layout.addWidget(add_account_btn)
+        button_layout_bottom.addWidget(add_account_btn)
 
         delete_account_btn = QPushButton("Delete")
         delete_account_btn.clicked.connect(self.handle_delete_account)
-        button_layout.addWidget(delete_account_btn)
+        button_layout_bottom.addWidget(delete_account_btn)
 
-        layout.addLayout(button_layout)
+        layout.addLayout(button_layout_top)
+        layout.addLayout(button_layout_bottom)
         
         widget.setLayout(layout)
         return widget
@@ -206,10 +214,12 @@ class MainWindow(QMainWindow):
         self.refresh_summary()
 
     def handle_delete_transaction(self):
-        self.popup_window.open_window(DelTransactionsWindow("Delete Transactions", 400, 500, self.db))
+        self.popup_window.open_window(DelTransactionsWindow("Delete Transaction", 400, 500, self.db))
         self.refresh_summary()
 
-    # Refresh the summary tables
+    def handle_add_transfer(self):
+        self.popup_window.open_window(AddTransfersWindow("Add Transfer", 400, 500, self.db))
+
     def refresh_summary(self):
         try:
             results = self.transaction_db_service.search_all()
@@ -278,9 +288,9 @@ class MainWindow(QMainWindow):
             print(e)
             return
         
-        self.budget_summary_table.setRowCount(len(budgets))
+        self.budget_summary_table.setRowCount(len(budgets)) # type: ignore
 
-        for i, budget in enumerate(budgets):
+        for i, budget in enumerate(budgets): # type: ignore
             name = QTableWidgetItem(str(budget[0]))
             category_type = QTableWidgetItem(str(budget[1]))
             balance = QTableWidgetItem(str(budget[2]))
