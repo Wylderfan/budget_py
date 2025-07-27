@@ -7,14 +7,14 @@ from PyQt6.QtWidgets import (
 )
 
 
-from .window_manager import WindowManager
-from .settings_window import SettingsWindow
-from .modify_categories import ModifyCategoriesWindow
-from .del_transactions_window import DelTransactionsWindow
-from .add_transactions_window import AddTransactionsWindow
-from .add_accounts_window import AddAccountsWindow
-from .add_transfers_window import AddTransfersWindow
-from .del_accounts_window import DelAccountsWindow
+from .common.window_manager import WindowManager
+from .common.settings_window import SettingsWindow
+from .categories.modify_categories import ModifyCategoriesWindow
+from .transactions.del_transactions_window import DelTransactionsWindow
+from .transactions.add_transactions_window import AddTransactionsWindow
+from .accounts.add_accounts_window import AddAccountsWindow
+from .transactions.add_transfers_window import AddTransfersWindow
+from .accounts.del_accounts_window import DelAccountsWindow
 
 from controllers.db.budget_db_service import BudgetDBService
 from controllers.db.transaction_db_service import TransactionDBService

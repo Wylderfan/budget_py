@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QComboBox, QFormLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QVBoxLayout
 from controllers.db.account_db_service import AccountDBService
-from views.popup_window import PopUpWindow
+from views.common.popup_window import PopUpWindow
 
 
 class SettingsWindow(PopUpWindow):

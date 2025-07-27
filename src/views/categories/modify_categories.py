@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout, QTableWidgetItem
 
-from views.popup_window import PopUpWindow
-from views.window_manager import WindowManager
+from views.common.popup_window import PopUpWindow
+from views.common.window_manager import WindowManager
 
 from controllers.db.categories_db_service import CategoriesDBService
 

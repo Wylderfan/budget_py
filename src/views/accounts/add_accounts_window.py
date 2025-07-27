@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QHBoxLayout, QMessageBox, QLabel
 )
 from PyQt6.QtCore import Qt
-from views.popup_window import PopUpWindow
+from views.common.popup_window import PopUpWindow
 
 from controllers.db.account_db_service import AccountDBService
 from config.config_loader import ConfigLoader

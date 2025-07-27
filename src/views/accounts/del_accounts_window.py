@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 
 from controllers.db.account_db_service import AccountDBService
 from controllers.db.transaction_db_service import TransactionDBService
-from views.popup_window import PopUpWindow
+from views.common.popup_window import PopUpWindow
 
 class DelAccountsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:

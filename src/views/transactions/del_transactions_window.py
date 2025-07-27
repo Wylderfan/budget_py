@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QDateEdit, QMessageBox
 from PyQt6.QtCore import Qt, QDate
 
-from views.popup_window import PopUpWindow
+from views.common.popup_window import PopUpWindow
 from controllers.db.transaction_db_service import TransactionDBService
 
 class DelTransactionsWindow(PopUpWindow):
