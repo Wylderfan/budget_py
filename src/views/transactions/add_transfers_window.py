@@ -75,6 +75,8 @@ class AddTransfersWindow(PopUpWindow):
                 for account in accounts:
                     # account is (name, id)
                     self.to_account_combo.addItem(str(account[1]), account[0])
+                offset_accounts = accounts[1:] + accounts[0:1]
+                for account in offset_accounts:    
                     self.from_account_combo.addItem(str(account[1]), account[0])
         except Exception as e:
             print(f"Error loading accounts: {e}")
@@ -110,6 +112,10 @@ class AddTransfersWindow(PopUpWindow):
 
         if to_account_id is None:
             QMessageBox.warning(self, "Invalid Input", "Please select a 'From:' account.")
+            return
+
+        if to_account_id == from_account_id:
+            QMessageBox.warning(self, "Invalid Input", "Please select a 'To:' account that is not the same as the 'From' account.")
             return
             
         print(f"Adding Transfer:")
