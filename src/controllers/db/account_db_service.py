@@ -166,8 +166,16 @@ class AccountDBService():
         UPDATE accounts
         JOIN transfer_data ON accounts.id IN (transfer_data.from_id, transfer_data.to_id)
         SET balance = balance + CASE
-            WHEN accounts.id = transfer_data.from_id THEN -transfer_data.amount
-            WHEN accounts.id = transfer_data.to_id THEN transfer_data.amount
+            WHEN accounts.id = transfer_data.from_id THEN 
+                CASE
+                    WHEN is_credit = TRUE THEN transfer_data.amount
+                    ELSE -transfer_data.amount
+                END
+            WHEN accounts.id = transfer_data.to_id THEN 
+                CASE
+                    WHEN is_credit = TRUE THEN -transfer_data.amount
+                    ELSE transfer_data.amount
+                END
         END
         """
 
