@@ -6,3 +6,4 @@ src/bin/
 .venv/
 .env
 .cursorrules
+CLAUDE.md
