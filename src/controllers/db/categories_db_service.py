@@ -7,7 +7,7 @@ class CategoriesDBService():
         self.db_connector: DatabaseConnector = db_connector
 
     def add_category(self, name, category_type):
-        date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        date_created = datetime.now().strftime('%Y-%m-%d')
         
         self.db_connector.connect()
 
@@ -47,10 +47,20 @@ class CategoriesDBService():
         return result
 
     def add_goal(self, category_name, goal_amount):
-        category_id = self.search_categories(name=category_name)[0][0] # type: ignore
-        date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
         self.db_connector.connect()
+        
+        # Get category_id within the same connection
+        search_query = """
+        SELECT id FROM categories WHERE name = %s
+        """
+        category_result = self.db_connector.execute_query(search_query, (category_name,))
+        
+        if not category_result:
+            self.db_connector.close()
+            return None
+            
+        category_id = category_result[0][0]
+        date_created = datetime.now().strftime('%Y-%m-%d')
 
         insert_query = """
         INSERT INTO budget_goals (category_id, goal, date_created)
@@ -71,7 +81,6 @@ class CategoriesDBService():
         WHERE category_id = %s
         """
 
-        print(f"Debug statment: {(goal, category_id)}")
         result = self.db_connector.execute_query(query, (goal, category_id))
 
         self.db_connector.close()

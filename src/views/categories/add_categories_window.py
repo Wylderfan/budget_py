@@ -8,7 +8,7 @@ class AddCategoriesWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, db, parent)
 
-        self.categies_db_service = CategoriesDBService(self.get_db())
+        self.categories_db_service = CategoriesDBService(self.get_db())
 
         self.setup_ui()
 
@@ -86,8 +86,8 @@ class AddCategoriesWindow(PopUpWindow):
         print(f"Goal amount: ${amount:.2f}")
 
         try:
-            category_result = self.categies_db_service.add_category(category_name, category_type)
-            goal_result = self.categies_db_service.add_goal(category_name, amount)
+            category_result = self.categories_db_service.add_category(category_name, category_type)
+            goal_result = self.categories_db_service.add_goal(category_name, amount)
             if category_result == 1 and goal_result == 1:
                 QMessageBox.information(self, "Success", "Category and Goal added successfully!")
                 self.accept()
