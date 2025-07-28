@@ -50,7 +50,7 @@ class MainWindow(QMainWindow):
         tabs.addTab(self.create_summary_tab(), "Summary")
         tabs.addTab(self.create_reports_tab(), "Reports")
 
-        button_layout = QHBoxLayout(central_widget)
+        button_layout = QHBoxLayout()
         settings_button = QPushButton("Settings")
         settings_button.clicked.connect(self.handle_settings)
         button_layout.addWidget(settings_button)
