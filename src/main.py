@@ -7,8 +7,11 @@ from database_connector import DatabaseConnector
 from database_initializer import DatabaseInitializer
 
 def main():
-    # Load environment variables
-    load_dotenv()
+    if getattr(sys, 'frozen', False):
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        load_dotenv(os.path.join(base_path, '.env'))
+    else:
+        load_dotenv()
     
     # Initialize database connection
     db = DatabaseConnector(

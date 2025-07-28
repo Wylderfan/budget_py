@@ -1,13 +1,21 @@
 import json
 import os
+import sys
 from typing import List, Dict, Optional
 
 class ConfigLoader:
     def __init__(self):
         self._account_types = None
-        self._config_dir = os.path.dirname(__file__)
-        self._account_types_file = os.path.join(self._config_dir, 'account_types.json')
-    
+
+        if getattr(sys, 'frozen', False):
+            # Running in PyInstaller bundle
+            base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+            self._account_types_file = os.path.join(base_path, 'config', 'account_types.json')
+        else:
+            # Running in development
+            self._config_dir = os.path.dirname(__file__)
+            self._account_types_file = os.path.join(self._config_dir, 'account_types.json')
+
     def _load_account_types(self) -> List[Dict]:
         if self._account_types is None:
             try:

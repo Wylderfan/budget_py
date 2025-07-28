@@ -1,5 +1,10 @@
 src/__pycache__/
 *.pyc
+*.spec
+.DS_Store
+src/dist/
+src/build/
+build/
 src/venv/
 src/lib/
 src/bin/
