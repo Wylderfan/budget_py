@@ -46,6 +46,37 @@ class CategoriesDBService():
         self.db_connector.close()
         return result
 
+    def add_goal(self, category_name, goal_amount):
+        category_id = self.search_categories(name=category_name)[0][0] # type: ignore
+        date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        self.db_connector.connect()
+
+        insert_query = """
+        INSERT INTO budget_goals (category_id, goal, date_created)
+        VALUES (%s, %s, %s)
+        """
+        
+        result = self.db_connector.execute_query(insert_query, (category_id, goal_amount, date_created))
+
+        self.db_connector.close()
+        return result
+
+    def modify_goal(self, category_id, goal):
+        self.db_connector.connect()
+
+        query = """
+        UPDATE budget_goals
+        SET goal = %s
+        WHERE category_id = %s
+        """
+
+        print(f"Debug statment: {(goal, category_id)}")
+        result = self.db_connector.execute_query(query, (goal, category_id))
+
+        self.db_connector.close()
+        return result
+
     def search_categories(self, id=None, name=None):
         """Needs either id || name"""
         self.db_connector.connect()
