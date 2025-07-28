@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt, QDate
 
 from views.common.popup_window import PopUpWindow
 from controllers.db.transaction_db_service import TransactionDBService
+from utils.number_formatter import NumberFormatter
 
 class DelTransactionsWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None, refresh_callback=None) -> None:
@@ -26,10 +27,12 @@ class DelTransactionsWindow(PopUpWindow):
         # Date range selection
         self.start_date_input = QDateEdit()
         self.start_date_input.setDate(QDate.currentDate().addDays(-30))  # Default to last 30 days
+        self.start_date_input.setCurrentSection(QDateEdit.Section.DaySection)
         form_layout.addRow("Start Date:", self.start_date_input)
 
         self.end_date_input = QDateEdit()
         self.end_date_input.setDate(QDate.currentDate())
+        self.end_date_input.setCurrentSection(QDateEdit.Section.DaySection)
         form_layout.addRow("End Date:", self.end_date_input)
 
         # Update button
@@ -81,13 +84,7 @@ class DelTransactionsWindow(PopUpWindow):
                     transaction_type = transaction[6]
                     
                     # Create display text for combo box
-                    if isinstance(amount, (int, float, str)):
-                        try:
-                            amount_str = f"${float(amount):.2f}"
-                        except (ValueError, TypeError):
-                            amount_str = str(amount)
-                    else:
-                        amount_str = str(amount)
+                    amount_str = NumberFormatter.safe_format_table_amount(amount)
                     display_text = f"{date} - {description} - {amount_str} ({category} - {account})"
                     
                     # Add item with transaction ID as data
