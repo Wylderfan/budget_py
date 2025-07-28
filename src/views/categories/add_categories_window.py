@@ -8,7 +8,7 @@ class AddCategoriesWindow(PopUpWindow):
     def __init__(self, window_name: str, min_width: int, min_height: int, db, parent=None) -> None:
         super().__init__(window_name, min_width, min_height, db, parent)
 
-        self.category_db_service = CategoriesDBService(self.get_db())
+        self.categories_db_service = CategoriesDBService(self.get_db())
 
         self.setup_ui()
 
@@ -19,7 +19,6 @@ class AddCategoriesWindow(PopUpWindow):
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(title_label)
         
-        # Form layout for inputs
         form_layout = QFormLayout()
         
         self.name_input = QLineEdit()
@@ -31,12 +30,15 @@ class AddCategoriesWindow(PopUpWindow):
             "Expense",
             "Income", 
             "Debt" 
-        ])
+        ]) # TODO change to json format
         form_layout.addRow("Category Type:", self.category_type_combo)
+
+        self.budget_goal_input = QLineEdit()
+        self.budget_goal_input.setPlaceholderText("Enter budget goal")
+        form_layout.addRow("Budget Goal:", self.budget_goal_input)
         
         main_layout.addLayout(form_layout)
         
-        # Buttons layout
         button_layout = QHBoxLayout()
         
         cancel_btn = QPushButton("Cancel")
@@ -56,8 +58,20 @@ class AddCategoriesWindow(PopUpWindow):
     def add_category(self):
         category_name = self.name_input.text().strip()
         category_type = self.category_type_combo.currentText()
+        budget_goal_text = self.budget_goal_input.text().strip()
 
-        # Validate category name
+        if not budget_goal_text:
+            QMessageBox.warning(self, "Invalid Input", "Please enter an amount.")
+            return
+            
+        try:
+            amount = round(float(budget_goal_text), 2)
+            if amount <= 0:
+                QMessageBox.warning(self, "Invalid Input", "Amount must be greater than 0.")
+                return
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for goal amount.")
+            return
         if not category_name:
             QMessageBox.warning(self, "Invalid Input", "Please enter a category name.")
             return
@@ -69,14 +83,17 @@ class AddCategoriesWindow(PopUpWindow):
         print(f"Adding Category:")
         print(f"Name: {category_name}")
         print(f"Category type: {category_type}")
+        print(f"Goal amount: ${amount:.2f}")
 
         try:
-            result = self.category_db_service.add_category(category_name, category_type)
-            if result == 1:
-                QMessageBox.information(self, "Success", "Category added successfully!")
+            category_result = self.categories_db_service.add_category(category_name, category_type)
+            goal_result = self.categories_db_service.add_goal(category_name, amount)
+            if category_result == 1 and goal_result == 1:
+                QMessageBox.information(self, "Success", "Category and Goal added successfully!")
                 self.accept()
             else:
-                QMessageBox.warning(self, "Error", "Failed to add category.")
+                QMessageBox.warning(self, "Error", "Failed to add category or goal.")
+            
         except Exception as e:
             print(f"Error adding category: {e}")
             QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")

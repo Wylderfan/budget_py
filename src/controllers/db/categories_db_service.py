@@ -7,7 +7,7 @@ class CategoriesDBService():
         self.db_connector: DatabaseConnector = db_connector
 
     def add_category(self, name, category_type):
-        date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        date_created = datetime.now().strftime('%Y-%m-%d')
         
         self.db_connector.connect()
 
@@ -42,6 +42,46 @@ class CategoriesDBService():
             print(f"successfully deleted category id: {id}")
         else:
             print(f"Error deleting category")
+
+        self.db_connector.close()
+        return result
+
+    def add_goal(self, category_name, goal_amount):
+        self.db_connector.connect()
+        
+        # Get category_id within the same connection
+        search_query = """
+        SELECT id FROM categories WHERE name = %s
+        """
+        category_result = self.db_connector.execute_query(search_query, (category_name,))
+        
+        if not category_result:
+            self.db_connector.close()
+            return None
+            
+        category_id = category_result[0][0]
+        date_created = datetime.now().strftime('%Y-%m-%d')
+
+        insert_query = """
+        INSERT INTO budget_goals (category_id, goal, date_created)
+        VALUES (%s, %s, %s)
+        """
+        
+        result = self.db_connector.execute_query(insert_query, (category_id, goal_amount, date_created))
+
+        self.db_connector.close()
+        return result
+
+    def modify_goal(self, category_id, goal):
+        self.db_connector.connect()
+
+        query = """
+        UPDATE budget_goals
+        SET goal = %s
+        WHERE category_id = %s
+        """
+
+        result = self.db_connector.execute_query(query, (goal, category_id))
 
         self.db_connector.close()
         return result
