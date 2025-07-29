@@ -19,6 +19,7 @@ from .accounts.del_accounts_window import DelAccountsWindow
 from controllers.db.budget_db_service import BudgetDBService
 from controllers.db.transaction_db_service import TransactionDBService
 from controllers.db.account_db_service import AccountDBService
+from utils.number_formatter import NumberFormatter
 
 class MainWindow(QMainWindow):
     def __init__(self, db):
@@ -235,11 +236,8 @@ class MainWindow(QMainWindow):
                 for i, row in enumerate(results):
                     for j, value in enumerate(row):
                         # Format amount with currency symbol
-                        if j == 2 and isinstance(value, (int, float, str)):  # Amount column
-                            try:
-                                item = QTableWidgetItem(f"${float(value):.2f}")
-                            except (ValueError, TypeError):
-                                item = QTableWidgetItem(str(value))
+                        if j == 2:  # Amount column
+                            item = QTableWidgetItem(NumberFormatter.safe_format_table_amount(value))
                         else:
                             item = QTableWidgetItem(str(value))
                         self.transaction_summary_table.setItem(i, j, item)
@@ -263,7 +261,7 @@ class MainWindow(QMainWindow):
 
         for i, account in enumerate(accounts): # type: ignore
             name = QTableWidgetItem(str(account[1]))
-            amount = QTableWidgetItem(f"${account[3]:.2f}")
+            amount = QTableWidgetItem(NumberFormatter.format_currency(account[3]))
             account_type = QTableWidgetItem(str(account[4]))
 
             self.account_summary_table.setItem(i, 0, name)
@@ -299,8 +297,8 @@ class MainWindow(QMainWindow):
         for i, budget in enumerate(budgets): # type: ignore
             name = QTableWidgetItem(str(budget[0]))
             category_type = QTableWidgetItem(str(budget[1]))
-            balance = QTableWidgetItem(str(budget[2]))
-            goal = QTableWidgetItem(str(budget[3]))
+            balance = QTableWidgetItem(NumberFormatter.format_currency(budget[2]))
+            goal = QTableWidgetItem(NumberFormatter.format_currency(budget[3]))
 
             self.budget_summary_table.setItem(i, 0, name)
             self.budget_summary_table.setItem(i, 1, category_type)

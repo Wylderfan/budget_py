@@ -105,7 +105,7 @@ class TransactionDBService():
         FROM transactions t
         LEFT JOIN categories c ON t.category = c.id
         LEFT JOIN accounts a ON t.account = a.id
-        ORDER BY t.date DESC
+        ORDER BY t.date DESC, t.id DESC
         """
 
         result = self.db_connector.execute_query(query)
@@ -123,7 +123,7 @@ class TransactionDBService():
         LEFT JOIN categories c ON t.category = c.id
         LEFT JOIN accounts a ON t.account = a.id
         WHERE t.date BETWEEN %s AND %s
-        ORDER BY t.date DESC
+        ORDER BY t.date DESC, t.id DESC
         """
 
         result = self.db_connector.execute_query(query, (start_date, end_date))
@@ -141,7 +141,7 @@ class TransactionDBService():
         LEFT JOIN categories c ON t.category = c.id
         LEFT JOIN accounts a ON t.account = a.id
         WHERE t.category = %s
-        ORDER BY t.date DESC
+        ORDER BY t.date DESC, t.id DESC
         """
 
         result = self.db_connector.execute_query(query, (category_id,))
@@ -159,7 +159,7 @@ class TransactionDBService():
         LEFT JOIN categories c ON t.category = c.id
         LEFT JOIN accounts a ON t.account = a.id
         WHERE t.account = %s
-        ORDER BY t.date DESC
+        ORDER BY t.date DESC, t.id DESC
         """
 
         result = self.db_connector.execute_query(query, (account_id,))
@@ -179,7 +179,7 @@ class TransactionDBService():
             LEFT JOIN categories c ON t.category = c.id
             LEFT JOIN accounts a ON t.account = a.id
             WHERE t.date BETWEEN %s AND %s
-            ORDER BY t.date DESC
+            ORDER BY t.date DESC, t.id DESC
             """
             result = self.db_connector.execute_query(query, (start_date, end_date))
         else:
@@ -188,7 +188,7 @@ class TransactionDBService():
             FROM transactions t
             LEFT JOIN categories c ON t.category = c.id
             LEFT JOIN accounts a ON t.account = a.id
-            ORDER BY t.date DESC
+            ORDER BY t.date DESC, t.id DESC
             """
             result = self.db_connector.execute_query(query)
 

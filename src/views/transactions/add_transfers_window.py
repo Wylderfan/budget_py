@@ -40,6 +40,7 @@ class AddTransfersWindow(PopUpWindow):
 
         self.date_input = QDateEdit()
         self.date_input.setDate(QDate.currentDate())
+        self.date_input.setCurrentSection(QDateEdit.Section.DaySection)
         form_layout.addRow("Date:", self.date_input)
 
         self.notes_input = QLineEdit()
