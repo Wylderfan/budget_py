@@ -1,11 +1,13 @@
 from controllers.db.account_db_service import AccountDBService
 from database_connector import DatabaseConnector
+from controllers.db.categories_db_service import CategoriesDBService
 
 class TransactionDBService():
     def __init__(self, db_connector) -> None:
         self.db_connector: DatabaseConnector = db_connector
 
         self.account_db_service = AccountDBService(self.db_connector)
+        self.categories_db_service = CategoriesDBService(self.db_connector)
 
     def add_transaction(self, date, description, amount, category_id, transaction_type, account_id, notes=""):
         self.db_connector.connect()
@@ -32,13 +34,21 @@ class TransactionDBService():
         to_account_name = self.account_db_service.search_account(id=to_account)[0][1] # type: ignore
         description = f"Transfer from {from_account_name} to {to_account_name}"
         transaction_type = "Transfer"
+        
+        transfer_category = self.categories_db_service.search_categories(name="Transfer")
+        
+        if not transfer_category:
+            self.categories_db_service.add_category("Transfer", "Transfer")
+            transfer_category = self.categories_db_service.search_categories(name="Transfer")
+        
+        category_id = transfer_category[0][0] # type: ignore
 
         self.db_connector.connect()
         query = """
-        INSERT INTO transactions (date, description, amount, type, account, notes)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO transactions (date, description, amount, category, type, account, notes)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
-        result = self.db_connector.execute_query(query, (date, description, amount, transaction_type, to_account, notes))
+        result = self.db_connector.execute_query(query, (date, description, amount, category_id, transaction_type, to_account, notes))
         self.db_connector.close()
         return result
 
