@@ -22,7 +22,10 @@ A Python-based budget tracking application built with PyQt6 and MySQL.
    DB_PASSWORD=your_password
    DB_NAME=budget_db
    ```
-
+5. Build the final file
+    ```
+    pyinstaller --onefile --windowed --add-data "../.env:." --add-data "config/account_types.json:config" --name "BudgetApp" main.py
+    ```
 ## Running the Application
 ```bash
 python src/main.py
