@@ -6,29 +6,84 @@ A Python-based budget tracking application built with PyQt6 and MySQL.
 - Track income and expenses
 - Categorize transactions
 - View budget summaries
-- Monthly/yearly reports
 
 ## Setup
-1. Install Python 3.8 or higher
-2. Install dependencies:
+
+### Prerequisites
+- Python 3.8 or higher
+- MySQL Server (local or remote)
+- Git (for cloning the repository)
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd budget_py
+   ```
+
+2. **Create and activate a virtual environment**
+   ```bash
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-3. Set up your MySQL database
-4. Create a `.env` file with your database credentials:
+
+4. **Set up MySQL database**
+   - Install MySQL Server if not already installed
+   - Create a new database named `budget_db` (or your preferred name)
+   - Create a MySQL user with appropriate permissions
+
+5. **Configure environment variables**
+   Create a `.env` file in the project root with your database credentials:
    ```
    DB_HOST=localhost
    DB_USER=your_username
    DB_PASSWORD=your_password
    DB_NAME=budget_db
    ```
-5. Build the final file
-    ```
-    pyinstaller --onefile --windowed --add-data "../.env:." --add-data "config/account_types.json:config" --name "BudgetApp" main.py
-    ```
-## Running the Application
+
+6. **Initialize the database**
+   The application will automatically create the necessary tables on first run.
+
+### Building Executable (Optional)
+To create a standalone executable:
+```bash
+pyinstaller --onefile --windowed --add-data "../.env:." --add-data "config/account_types.json:config" --name "BudgetApp" main.py
+```
+## Running the Application without building
+
+Make sure your virtual environment is activated, then run:
 ```bash
 python src/main.py
+```
+
+## Development and Testing
+
+### Running Tests
+```bash
+# Run all tests from src/ directory
+cd src
+python -m pytest tests/
+```
+
+### Generate Sample Data
+For testing purposes, you can generate sample transactions:
+```bash
+cd src/tests
+python run_transaction_generator.py
+# OR for interactive mode:
+python generate_sample_transactions.py
 ```
 
 ## Project Structure
