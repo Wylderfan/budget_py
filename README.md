@@ -18,7 +18,7 @@ A Python-based budget tracking application built with PyQt6 and MySQL.
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Wylderfan/budget_py
    cd budget_py
    ```
 
