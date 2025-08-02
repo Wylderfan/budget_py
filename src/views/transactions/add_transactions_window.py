@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (
-    QLineEdit, QVBoxLayout, QPushButton, QFormLayout, 
+    QCheckBox, QLineEdit, QVBoxLayout, QPushButton, QFormLayout, 
     QComboBox, QHBoxLayout, QMessageBox, QLabel, QDateEdit
 )
 from PyQt6.QtCore import Qt, QDate
@@ -56,6 +56,10 @@ class AddTransactionsWindow(PopUpWindow):
         self.notes_input = QLineEdit()
         self.notes_input.setPlaceholderText("Notes (optional)")
         form_layout.addRow("Notes:", self.notes_input)
+
+        self.alter_account_checkbox = QCheckBox()
+        form_layout.addRow("Avoid alterations to account balance:", self.alter_account_checkbox)
+        
         
         main_layout.addLayout(form_layout)
         
@@ -109,6 +113,7 @@ class AddTransactionsWindow(PopUpWindow):
         date = self.date_input.date().toPyDate()
         transaction_type = self.type_combo.currentText()
         notes = self.notes_input.text().strip()
+        is_alter_account =  True if self.alter_account_checkbox.checkState() == Qt.CheckState.Unchecked else False
         
         if not amount_text:
             QMessageBox.warning(self, "Invalid Input", "Please enter an amount.")
@@ -151,12 +156,16 @@ class AddTransactionsWindow(PopUpWindow):
         print(f"Date: {date}")
         print(f"Type: {transaction_type}")
         print(f"Notes: {notes}")
+        print(f"Altering account: {is_alter_account}")
         
         try:
             transaction_result = self.transaction_db_service.add_transaction(
                 date, description, amount, category_id, transaction_type, account_id, notes
             )
-            account_result = self.accounts_db_service.add_transaction(account_id, amount if transaction_type == "Income" else -amount)
+            if is_alter_account:
+                account_result = self.accounts_db_service.add_transaction(account_id, amount if transaction_type == "Income" else -amount)
+            else:
+                account_result = None
             
             if transaction_result == 1 and account_result == 1:
                 QMessageBox.information(self, "Success", "Transaction added successfully and account was updated.")

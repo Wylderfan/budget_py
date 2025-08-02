@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QDateEdit, QMessageBox
+from PyQt6.QtWidgets import QCheckBox, QComboBox, QFormLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QDateEdit, QMessageBox
 from PyQt6.QtCore import Qt, QDate
 
+from controllers.db.account_db_service import AccountDBService
 from views.common.popup_window import PopUpWindow
 from controllers.db.transaction_db_service import TransactionDBService
 from utils.number_formatter import NumberFormatter
@@ -10,7 +11,10 @@ class DelTransactionsWindow(PopUpWindow):
         super().__init__(window_name, min_width, min_height, db, parent)
         self.refresh_callback = refresh_callback
 
-        self.transaction_db_service = TransactionDBService(self.get_db())
+        self.db_connector = db
+
+        self.transaction_db_service = TransactionDBService(self.db_connector)
+        self.accounts_db_service = AccountDBService(self.db_connector)
 
         self.setup_ui()
         self.load_transactions()
@@ -24,7 +28,6 @@ class DelTransactionsWindow(PopUpWindow):
 
         form_layout = QFormLayout()
 
-        # Date range selection
         self.start_date_input = QDateEdit()
         self.start_date_input.setDate(QDate.currentDate().addDays(-30))  # Default to last 30 days
         self.start_date_input.setCurrentSection(QDateEdit.Section.DaySection)
@@ -35,14 +38,15 @@ class DelTransactionsWindow(PopUpWindow):
         self.end_date_input.setCurrentSection(QDateEdit.Section.DaySection)
         form_layout.addRow("End Date:", self.end_date_input)
 
-        # Update button
         update_btn = QPushButton("Update Transactions")
         update_btn.clicked.connect(self.load_transactions)
         form_layout.addRow("", update_btn)
 
-        # Transaction selection
         self.select_transaction_combo = QComboBox()
         form_layout.addRow("Select Transaction:", self.select_transaction_combo)
+
+        self.reverse_account_changes_checkbox = QCheckBox()
+        form_layout.addRow("Reverse changes to account:", self.reverse_account_changes_checkbox)
 
         main_layout.addLayout(form_layout)
 
@@ -72,9 +76,9 @@ class DelTransactionsWindow(PopUpWindow):
             
             transactions = self.transaction_db_service.search_for_deletion(start_date, end_date)
             
+            self.transaction_information: list = []
             if transactions and isinstance(transactions, list):
                 for transaction in transactions:
-                    # transaction format: [id, date, description, amount, category_name, account_name, type]
                     transaction_id = transaction[0]
                     date = transaction[1]
                     description = transaction[2]
@@ -82,13 +86,14 @@ class DelTransactionsWindow(PopUpWindow):
                     category = transaction[4]
                     account = transaction[5]
                     transaction_type = transaction[6]
+                    account_id = transaction[7]
                     
-                    # Create display text for combo box
-                    amount_str = NumberFormatter.safe_format_table_amount(amount)
-                    display_text = f"{date} - {description} - {amount_str} ({category} - {account})"
+                    amount_str = NumberFormatter.safe_format_table_amount(amount) # type: ignore
+                    display_text = f"{date} - {description} - {amount_str} ({category} - {account} - {transaction_type})"
                     
-                    # Add item with transaction ID as data
                     self.select_transaction_combo.addItem(display_text, transaction_id)
+                    self.transaction_information.append((account_id, amount if transaction_type == "Income" else -amount, transaction_type)) # type: ignore
+
             
             if self.select_transaction_combo.count() == 0:
                 self.select_transaction_combo.addItem("No transactions found for this date range")
@@ -104,8 +109,8 @@ class DelTransactionsWindow(PopUpWindow):
 
         selected_transaction_text = self.select_transaction_combo.currentText()
         transaction_id = self.select_transaction_combo.currentData()
+        is_reverse_changes = True if self.reverse_account_changes_checkbox.checkState() == Qt.CheckState.Checked else False
 
-        # Confirmation dialog
         reply = QMessageBox.question(
             self, 
             "Confirm Deletion", 
@@ -119,11 +124,16 @@ class DelTransactionsWindow(PopUpWindow):
 
         try:
             result = self.transaction_db_service.del_transaction(transaction_id)
+            if is_reverse_changes and result == 1:
+                current_index = self.select_transaction_combo.currentIndex()
+                if self.transaction_information[current_index][2] != "Transfer":
+                    reverse_result = self.accounts_db_service.add_transaction(self.transaction_information[current_index][0], -self.transaction_information[current_index][1])
+                    print(f"Result for account reversal: {reverse_result}")
+                else:
+                    QMessageBox.warning(self, "Warning", "Transfers currently cannot be reversed... Continuing with deletion.")
             if result == 1:
                 QMessageBox.information(self, "Success", "Transaction deleted successfully!")
-                self.load_transactions()  # Refresh the list
-                if self.refresh_callback:
-                    self.refresh_callback()  # Refresh the main window's table
+                self.load_transactions()
             else:
                 QMessageBox.warning(self, "Error", "Failed to delete transaction.")
         except Exception as e:

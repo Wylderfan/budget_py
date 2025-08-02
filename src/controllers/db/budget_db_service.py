@@ -24,6 +24,7 @@ class BudgetDBService():
                 END) as net_amount
             FROM transactions t
             LEFT JOIN categories c ON t.category = c.id
+            WHERE c.name != 'Transfer'
             GROUP BY t.category
             """
 
@@ -43,7 +44,7 @@ class BudgetDBService():
                 END) as net_amount
             FROM transactions t
             LEFT JOIN categories c ON t.category = c.id
-            WHERE YEAR(t.date) = %s AND MONTH(t.date) = %s
+            WHERE YEAR(t.date) = %s AND MONTH(t.date) = %s AND c.name != 'Transfer'
             GROUP BY t.category
             """
             
