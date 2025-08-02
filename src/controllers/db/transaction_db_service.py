@@ -184,7 +184,7 @@ class TransactionDBService():
 
         if start_date and end_date:
             query = """
-            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type
+            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type, a.id as account_id
             FROM transactions t
             LEFT JOIN categories c ON t.category = c.id
             LEFT JOIN accounts a ON t.account = a.id
@@ -194,7 +194,7 @@ class TransactionDBService():
             result = self.db_connector.execute_query(query, (start_date, end_date))
         else:
             query = """
-            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type
+            SELECT t.id, t.date, t.description, t.amount, c.name as category_name, a.name as account_name, t.type, a.id as account_id
             FROM transactions t
             LEFT JOIN categories c ON t.category = c.id
             LEFT JOIN accounts a ON t.account = a.id

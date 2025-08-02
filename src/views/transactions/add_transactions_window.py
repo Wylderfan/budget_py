@@ -162,7 +162,7 @@ class AddTransactionsWindow(PopUpWindow):
             transaction_result = self.transaction_db_service.add_transaction(
                 date, description, amount, category_id, transaction_type, account_id, notes
             )
-            if is_alter_account is True:
+            if is_alter_account:
                 account_result = self.accounts_db_service.add_transaction(account_id, amount if transaction_type == "Income" else -amount)
             else:
                 account_result = None

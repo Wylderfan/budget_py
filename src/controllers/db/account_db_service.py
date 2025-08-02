@@ -98,6 +98,7 @@ class AccountDBService():
             print("Balance successfully modified")
         else:
             print("Error modifying balance")
+            print(f"result: {result}")
 
         self.db_connector.close()
 
