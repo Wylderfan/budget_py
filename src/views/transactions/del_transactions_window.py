@@ -76,7 +76,7 @@ class DelTransactionsWindow(PopUpWindow):
             
             transactions = self.transaction_db_service.search_for_deletion(start_date, end_date)
             
-            self.transaction_id_amounts: list = []
+            self.transaction_information: list = []
             if transactions and isinstance(transactions, list):
                 for transaction in transactions:
                     transaction_id = transaction[0]
@@ -92,7 +92,7 @@ class DelTransactionsWindow(PopUpWindow):
                     display_text = f"{date} - {description} - {amount_str} ({category} - {account} - {transaction_type})"
                     
                     self.select_transaction_combo.addItem(display_text, transaction_id)
-                    self.transaction_id_amounts.append((account_id, amount if transaction_type == "Income" else -amount)) # type: ignore
+                    self.transaction_information.append((account_id, amount if transaction_type == "Income" else -amount, transaction_type)) # type: ignore
 
             
             if self.select_transaction_combo.count() == 0:
@@ -126,8 +126,11 @@ class DelTransactionsWindow(PopUpWindow):
             result = self.transaction_db_service.del_transaction(transaction_id)
             if is_reverse_changes and result == 1:
                 current_index = self.select_transaction_combo.currentIndex()
-                reverse_result = self.accounts_db_service.add_transaction(self.transaction_id_amounts[current_index][0], -self.transaction_id_amounts[current_index][1])
-                print(f"Result for account reversal: {reverse_result}")
+                if self.transaction_information[current_index][2] != "Transfer":
+                    reverse_result = self.accounts_db_service.add_transaction(self.transaction_information[current_index][0], -self.transaction_information[current_index][1])
+                    print(f"Result for account reversal: {reverse_result}")
+                else:
+                    QMessageBox.warning(self, "Warning", "Transfers currently cannot be reversed... Continuing with deletion.")
             if result == 1:
                 QMessageBox.information(self, "Success", "Transaction deleted successfully!")
                 self.load_transactions()
