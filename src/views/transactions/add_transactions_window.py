@@ -157,6 +157,19 @@ class AddTransactionsWindow(PopUpWindow):
         print(f"Type: {transaction_type}")
         print(f"Notes: {notes}")
         print(f"Altering account: {is_alter_account}")
+
+        transaction_duplicate = self.check_transaction_duplicate(date, amount)
+        if transaction_duplicate:
+            reply = QMessageBox.question(
+                    self,
+                    "Duplicate Found",
+                    f"Duplicate entry found with the name: \n'{transaction_duplicate}'\n\nWould you like to proceed?",
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No
+                )
+            if reply == QMessageBox.StandardButton.No:
+                QMessageBox.information(self, "Cancelled", "Transaction addition was cancelled")
+                return
         
         try:
             transaction_result = self.transaction_db_service.add_transaction(
@@ -180,4 +193,7 @@ class AddTransactionsWindow(PopUpWindow):
         except Exception as e:
             print(f"Error adding transaction: {e}")
             QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}") 
+
+    def check_transaction_duplicate(self, date, amount):
+        return self.transaction_db_service.check_amount(amount, date)
 

@@ -205,3 +205,17 @@ class TransactionDBService():
         self.db_connector.close()
 
         return result 
+
+    def check_amount(self, amount, date):
+        self.db_connector.connect()
+        query = """
+        SELECT description
+        FROM transactions
+        WHERE amount = %s AND date = %s
+        """
+        result = self.db_connector.execute_query(query, (amount, date))
+        self.db_connector.close()
+        if result:
+            return result[0][0] # type: ignore
+        return None
+
